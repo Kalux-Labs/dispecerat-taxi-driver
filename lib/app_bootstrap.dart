@@ -1,0 +1,32 @@
+import 'package:driver/src/business_logic/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:driver/src/business_logic/cubits/location_permission_cubit.dart';
+import 'package:driver/src/business_logic/cubits/secure_storage_cubit.dart';
+import 'package:driver/src/repositories/authentication_repository.dart';
+import 'package:driver/src/repositories/database_repository.dart';
+import 'package:driver/src/repositories/firestore_repository.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class AppBootstrap extends StatelessWidget {
+  const AppBootstrap({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider<DatabaseRepository>(create: (context) => DatabaseRepository()),
+          RepositoryProvider<FirestoreRepository>(create: (context) => FirestoreRepository()),
+          RepositoryProvider<AuthenticationRepository>(create: (context) => AuthenticationRepository()),
+        ],
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider<LocationPermissionCubit>(create: (context) => LocationPermissionCubit()),
+            BlocProvider<SecureStorageCubit>(create: (context) => SecureStorageCubit()),
+            BlocProvider<AuthenticationBloc>(create: (context) => AuthenticationBloc(authenticationRepository: context.read<AuthenticationRepository>()))
+          ],
+          child: child,
+        ));
+  }
+}
