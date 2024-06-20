@@ -1,4 +1,4 @@
-package com.example.dispecerat_taxi_driver
+package com.kaluxlabs.driver
 
 import io.flutter.embedding.android.FlutterActivity
 

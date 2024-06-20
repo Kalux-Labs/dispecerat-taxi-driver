@@ -1,9 +1,11 @@
 import 'package:driver/src/business_logic/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
+import 'package:driver/src/business_logic/cubits/app_theme_cubit.dart';
 import 'package:driver/src/business_logic/cubits/location_permission_cubit.dart';
-import 'package:driver/src/business_logic/cubits/secure_storage_cubit.dart';
 import 'package:driver/src/repositories/authentication_repository.dart';
 import 'package:driver/src/repositories/database_repository.dart';
 import 'package:driver/src/repositories/firestore_repository.dart';
+import 'package:driver/src/repositories/secure_storage_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,15 +18,27 @@ class AppBootstrap extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
         providers: [
-          RepositoryProvider<DatabaseRepository>(create: (context) => DatabaseRepository()),
-          RepositoryProvider<FirestoreRepository>(create: (context) => FirestoreRepository()),
-          RepositoryProvider<AuthenticationRepository>(create: (context) => AuthenticationRepository()),
+          RepositoryProvider<DatabaseRepository>(
+              create: (context) => DatabaseRepository()),
+          RepositoryProvider<FirestoreRepository>(
+              create: (context) => FirestoreRepository()),
+          RepositoryProvider<AuthenticationRepository>(
+              create: (context) => AuthenticationRepository()),
+          RepositoryProvider<SecureStorageRepository>(
+              create: (context) => SecureStorageRepository())
         ],
         child: MultiBlocProvider(
           providers: [
-            BlocProvider<LocationPermissionCubit>(create: (context) => LocationPermissionCubit()),
-            BlocProvider<SecureStorageCubit>(create: (context) => SecureStorageCubit()),
-            BlocProvider<AuthenticationBloc>(create: (context) => AuthenticationBloc(authenticationRepository: context.read<AuthenticationRepository>()))
+            BlocProvider<LocationPermissionCubit>(
+                create: (context) => LocationPermissionCubit()),
+            BlocProvider<AppThemeCubit>(create: (context) => AppThemeCubit()),
+            BlocProvider<AppSessionCubit>(create: (context) => AppSessionCubit()),
+            BlocProvider<AuthenticationBloc>(
+                create: (context) => AuthenticationBloc(
+                    authenticationRepository:
+                        context.read<AuthenticationRepository>(),
+                    secureStorageRepository:
+                        context.read<SecureStorageRepository>()))
           ],
           child: child,
         ));

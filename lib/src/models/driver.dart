@@ -9,6 +9,7 @@ class Driver {
   final double? long;
   final String? orderId;
   final bool? available;
+  final String? name;
 
   Driver(
       {required this.id,
@@ -17,7 +18,8 @@ class Driver {
       this.lat,
       this.long,
       this.orderId,
-      this.available});
+      this.available,
+      this.name});
 
   factory Driver.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     Map data = snapshot.data() as Map<String, dynamic>;
@@ -28,7 +30,8 @@ class Driver {
         lat: data['lat'],
         long: data['long'],
         orderId: data['orderId'],
-        available: data['available']);
+        available: data['available'],
+        name: data['name']);
   }
 
   factory Driver.fromDataSnapshot(DataSnapshot snapshot) {
@@ -44,6 +47,7 @@ class Driver {
         lat: data['lat'] as double?,
         long: data['long'] as double?,
         orderId: data['orderId'] as String?,
-        available: data['available'] as bool?);
+        available: data['available'] as bool?,
+        name: data['name'] as String?);
   }
 }

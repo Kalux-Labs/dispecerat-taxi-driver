@@ -10,9 +10,9 @@ class GetLoginStatus extends AuthenticationEvent {
 }
 
 class LoginUser extends AuthenticationEvent{
-  final String token;
+  final String phone;
 
-  const LoginUser({required this.token});
+  const LoginUser({required this.phone});
   @override
   List<Object?> get props => <Object>[];
 }

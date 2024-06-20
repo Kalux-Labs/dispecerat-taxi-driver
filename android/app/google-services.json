@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "258791839133",
+    "firebase_url": "https://dispecerat-taxi-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "dispecerat-taxi",
+    "storage_bucket": "dispecerat-taxi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:258791839133:android:c00fc3c6ab0562b6710b74",
+        "android_client_info": {
+          "package_name": "com.kaluxlabs.driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpDHttaSop8Tg9S-rUQE4xn8jD_lchRhg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

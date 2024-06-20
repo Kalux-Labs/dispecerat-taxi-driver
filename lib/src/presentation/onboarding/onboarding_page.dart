@@ -1,4 +1,6 @@
 import 'package:driver/src/business_logic/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
+import 'package:driver/src/models/driver.dart';
 import 'package:driver/src/presentation/authentication/authentication_page.dart';
 import 'package:driver/src/presentation/loading/loading_page.dart';
 import 'package:driver/src/presentation/main/main_page.dart';
@@ -14,34 +16,42 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
-
   @override
   void initState() {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      if(context.mounted) {
+      if (context.mounted) {
         context.read<AuthenticationBloc>().add(GetLoginStatus());
       }
     });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      builder: (BuildContext context, AuthenticationState authenticationState) {
-        if(authenticationState.authenticationError == AuthenticationError.atLogin) {
+    return BlocBuilder<AuthenticationBloc, AuthenticationState>(builder:
+        (BuildContext context, AuthenticationState authenticationState) {
+      return BlocBuilder<AppSessionCubit, Driver?>(
+          builder: (BuildContext context, Driver? driver) {
+        if (authenticationState.authenticationError ==
+            AuthenticationError.atLogin) {
           // go to error page
         }
-        if(authenticationState.authenticationError == AuthenticationError.atFetchingLoginStatus){
+        if (authenticationState.authenticationError ==
+            AuthenticationError.atFetchingLoginStatus) {
           // go to error page
         }
-        if(authenticationState.authenticationStatus == AuthenticationStatus.unauthenticated) {
+        if (authenticationState.authenticationStatus ==
+            AuthenticationStatus.unauthenticated) {
           return const AuthenticationPage();
         }
-        if(authenticationState.authenticationStatus == AuthenticationStatus.authenticated || authenticationState.isLoggedIn) {
+        if (authenticationState.authenticationStatus ==
+                AuthenticationStatus.authenticated ||
+            authenticationState.isLoggedIn) {
+          context.read<AppSessionCubit>().copyWith(authenticationState.driver);
           return const MainPage();
         }
         return const LoadingPage();
-      }
-    );
+      });
+    });
   }
 }
