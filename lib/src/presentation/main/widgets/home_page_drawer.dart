@@ -21,8 +21,8 @@ class HomePageDrawer extends StatelessWidget {
                 accountName: Text(driver?.name ?? ''),
                 accountEmail: Text('Numar taxi: ${driver?.number ?? ''}')),
             ListTile(
-                leading: Icon(Icons.settings),
-                title: Text('Setari'),
+                leading: const Icon(Icons.settings),
+                title: const Text('Setari'),
                 onTap: () {
                   AppRouter.appNav.currentState!
                       .pushNamed(AppRoutes.settingsPage);

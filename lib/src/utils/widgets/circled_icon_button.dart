@@ -10,7 +10,7 @@ class CircledIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
         onPressed: onPressed,
-        child: Icon(iconData),
-        style: ElevatedButton.styleFrom(shape: CircleBorder()));
+        style: ElevatedButton.styleFrom(shape: const CircleBorder()),
+        child: Icon(iconData));
   }
 }

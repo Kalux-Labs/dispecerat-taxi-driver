@@ -1,9 +1,11 @@
-import 'package:driver/src/business_logic/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
+import 'package:driver/src/business_logic/cubits/authentication_cubit/authentication_cubit.dart';
 import 'package:driver/src/models/driver.dart';
 import 'package:driver/src/presentation/authentication/authentication_page.dart';
+import 'package:driver/src/presentation/error/error_page.dart';
 import 'package:driver/src/presentation/loading/loading_page.dart';
 import 'package:driver/src/presentation/main/main_page.dart';
+import 'package:driver/src/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +22,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   void initState() {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       if (context.mounted) {
-        context.read<AuthenticationBloc>().add(GetLoginStatus());
+        context.read<AuthenticationCubit>().checkUserStatus();
       }
     });
     super.initState();
@@ -28,26 +30,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationBloc, AuthenticationState>(builder:
-        (BuildContext context, AuthenticationState authenticationState) {
+    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
+        builder: (BuildContext context, AuthenticationState state) {
+      print(state);
       return BlocBuilder<AppSessionCubit, Driver?>(
           builder: (BuildContext context, Driver? driver) {
-        if (authenticationState.authenticationError ==
-            AuthenticationError.atLogin) {
-          // go to error page
-        }
-        if (authenticationState.authenticationError ==
-            AuthenticationError.atFetchingLoginStatus) {
-          // go to error page
-        }
-        if (authenticationState.authenticationStatus ==
-            AuthenticationStatus.unauthenticated) {
+        if (state is AuthError) {
+          return const ErrorPage();
+        } else if (state is AuthInitial ||
+            state is AuthCodeAutoRetrievalTimeout ||
+            state is AuthCodeSent) {
           return const AuthenticationPage();
-        }
-        if (authenticationState.authenticationStatus ==
-                AuthenticationStatus.authenticated ||
-            authenticationState.isLoggedIn) {
-          context.read<AppSessionCubit>().copyWith(authenticationState.driver);
+        } else if (state is AuthSuccess) {
+          context.read<AppSessionCubit>().initializeDriver(state.user);
           return const MainPage();
         }
         return const LoadingPage();

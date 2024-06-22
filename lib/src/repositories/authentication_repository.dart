@@ -1,27 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver/src/models/driver.dart';
 import 'package:driver/src/utils/app_constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<Driver?> getDriverByPhone(String phone) async {
-    QuerySnapshot querySnapshot = await _firestore
-        .collection(AppConstants.drivers)
-        .where('phone', isEqualTo: phone)
-        .get();
-    if (querySnapshot.docs.isNotEmpty) {
-      return Driver.fromDocumentSnapshot(querySnapshot.docs.first);
-    }
-    return null;
+  Future<void> verifyPhoneNumber({
+    required String phoneNumber,
+    required PhoneVerificationCompleted verificationCompleted,
+    required PhoneVerificationFailed verificationFailed,
+    required PhoneCodeSent codeSent,
+    required PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout,
+  }) async {
+    await _firebaseAuth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: verificationCompleted,
+        verificationFailed: verificationFailed,
+        codeSent: codeSent,
+        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
   }
 
-  Future<Driver?> getDriverById(String id) async {
-    DocumentSnapshot documentSnapshot =
-        await _firestore.collection(AppConstants.drivers).doc(id).get();
-    if (documentSnapshot.exists) {
-      return Driver.fromDocumentSnapshot(documentSnapshot);
-    }
-    return null;
+  Future<User?> signInWithCredential(AuthCredential credential) async {
+    UserCredential userCredential =
+        await _firebaseAuth.signInWithCredential(credential);
+    return userCredential.user;
+  }
+
+  User? getCurrentUser() {
+    return _firebaseAuth.currentUser;
   }
 }

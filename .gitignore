@@ -17,6 +17,10 @@ Gemfile.lock
 *.dSYM.zip
 artifacts/
 .vscode
+android/debug.properties
+android/release.properties
+android/app/debug.jks
+android/app/release.jks
 
 # IntelliJ related
 *.iml

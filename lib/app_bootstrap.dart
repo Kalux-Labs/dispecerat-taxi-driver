@@ -1,6 +1,6 @@
-import 'package:driver/src/business_logic/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
 import 'package:driver/src/business_logic/cubits/app_theme_cubit.dart';
+import 'package:driver/src/business_logic/cubits/authentication_cubit/authentication_cubit.dart';
 import 'package:driver/src/business_logic/cubits/location_permission_cubit.dart';
 import 'package:driver/src/repositories/authentication_repository.dart';
 import 'package:driver/src/repositories/database_repository.dart';
@@ -32,13 +32,19 @@ class AppBootstrap extends StatelessWidget {
             BlocProvider<LocationPermissionCubit>(
                 create: (context) => LocationPermissionCubit()),
             BlocProvider<AppThemeCubit>(create: (context) => AppThemeCubit()),
-            BlocProvider<AppSessionCubit>(create: (context) => AppSessionCubit()),
-            BlocProvider<AuthenticationBloc>(
-                create: (context) => AuthenticationBloc(
+            BlocProvider<AppSessionCubit>(
+                create: (context) => AppSessionCubit(
+                    firestoreRepository: context.read<FirestoreRepository>())),
+            BlocProvider<AuthenticationCubit>(
+                create: (context) => AuthenticationCubit(
                     authenticationRepository:
-                        context.read<AuthenticationRepository>(),
-                    secureStorageRepository:
-                        context.read<SecureStorageRepository>()))
+                        context.read<AuthenticationRepository>()))
+            // BlocProvider<AuthenticationBloc>(
+            //     create: (context) => AuthenticationBloc(
+            //         authenticationRepository:
+            //             context.read<AuthenticationRepository>(),
+            //         secureStorageRepository:
+            //             context.read<SecureStorageRepository>()))
           ],
           child: child,
         ));
