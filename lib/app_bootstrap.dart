@@ -1,7 +1,8 @@
 import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
 import 'package:driver/src/business_logic/cubits/app_theme_cubit.dart';
 import 'package:driver/src/business_logic/cubits/authentication_cubit/authentication_cubit.dart';
-import 'package:driver/src/business_logic/cubits/location_permission_cubit.dart';
+import 'package:driver/src/business_logic/cubits/location_cubit/location_cubit.dart';
+import 'package:driver/src/business_logic/cubits/map_cubit/map_cubit.dart';
 import 'package:driver/src/repositories/authentication_repository.dart';
 import 'package:driver/src/repositories/database_repository.dart';
 import 'package:driver/src/repositories/firestore_repository.dart';
@@ -29,8 +30,7 @@ class AppBootstrap extends StatelessWidget {
         ],
         child: MultiBlocProvider(
           providers: [
-            BlocProvider<LocationPermissionCubit>(
-                create: (context) => LocationPermissionCubit()),
+            BlocProvider<LocationCubit>(create: (context) => LocationCubit()),
             BlocProvider<AppThemeCubit>(create: (context) => AppThemeCubit()),
             BlocProvider<AppSessionCubit>(
                 create: (context) => AppSessionCubit(
@@ -38,13 +38,10 @@ class AppBootstrap extends StatelessWidget {
             BlocProvider<AuthenticationCubit>(
                 create: (context) => AuthenticationCubit(
                     authenticationRepository:
-                        context.read<AuthenticationRepository>()))
-            // BlocProvider<AuthenticationBloc>(
-            //     create: (context) => AuthenticationBloc(
-            //         authenticationRepository:
-            //             context.read<AuthenticationRepository>(),
-            //         secureStorageRepository:
-            //             context.read<SecureStorageRepository>()))
+                        context.read<AuthenticationRepository>())),
+            BlocProvider<MapCubit>(
+              create: (context) => MapCubit(),
+            )
           ],
           child: child,
         ));

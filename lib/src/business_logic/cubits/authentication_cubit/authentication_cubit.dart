@@ -1,5 +1,6 @@
 import 'package:driver/src/repositories/authentication_repository.dart';
 import 'package:driver/src/router/app_router.dart';
+import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,20 +19,16 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     _authenticationRepository.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        print("verificationCompleted");
         await signInWithCredential(credential);
       },
       verificationFailed: (FirebaseAuthException e) {
-        print(e);
         emit(AuthError(
             e.message ?? 'Unknown error occurred', AuthErrorStatus.atLogin));
       },
       codeSent: (String verificationId, int? resendToken) {
-        print("codeSent");
         emit(AuthCodeSent(verificationId));
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        print("codeAutoRetrievalTimeout");
         AppRouter.scaffoldMessengerState.currentState!
             .showSnackBar(const SnackBar(content: Text("Codul a expirat")));
         emit(AuthCodeAutoRetrievalTimeout(verificationId));
@@ -42,7 +39,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   Future<void> signInWithCredential(AuthCredential credential) async {
     try {
       emit(AuthLoading());
-      print("AJUNS AICI ${credential}");
       User? user =
           await _authenticationRepository.signInWithCredential(credential);
       if (user != null) {
@@ -70,5 +66,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       smsCode: smsCode,
     );
     signInWithCredential(credential);
+  }
+
+  void resetAuthentication() {
+    emit(AuthInitial());
   }
 }
