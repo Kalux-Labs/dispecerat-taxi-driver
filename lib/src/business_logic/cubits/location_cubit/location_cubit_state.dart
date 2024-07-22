@@ -7,12 +7,11 @@ abstract class LocationState extends Equatable {
 
 class LocationUpdated extends LocationState {
   final Position position;
-  final Set<Marker> markers;
 
-  LocationUpdated({required this.position, required this.markers});
+  LocationUpdated({required this.position});
 
   @override
-  List<Object> get props => [position, markers];
+  List<Object> get props => [position];
 }
 
 class LocationPermissionInitial extends LocationState {}

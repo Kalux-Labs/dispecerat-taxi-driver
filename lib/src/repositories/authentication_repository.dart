@@ -1,10 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:driver/src/models/driver.dart';
-import 'package:driver/src/utils/app_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationRepository {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Future<void> verifyPhoneNumber({

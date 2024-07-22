@@ -1,3 +1,8 @@
 enum OrderStatus {
-  pending, accepted, declined
+  pending,
+  assigned,
+  accepted,
+  noDriverFound,
+  expired,
+  completed
 }

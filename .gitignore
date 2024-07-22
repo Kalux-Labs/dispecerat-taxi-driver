@@ -2,6 +2,8 @@
 .fvm/
 
 # Miscellaneous
+.env
+lib/env/env.g.dart
 *.class
 *.log
 *.pyc

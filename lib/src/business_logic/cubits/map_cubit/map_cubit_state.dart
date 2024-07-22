@@ -10,11 +10,16 @@ class MapInitial extends MapState {}
 class MapLoading extends MapState {}
 
 class MapLoaded extends MapState {
-  final LatLng currentLocation;
+  final Map<MarkerId, Marker> markers;
+  final Map<PolylineId, Polyline> polylines;
 
-  MapLoaded(this.currentLocation);
+  MapLoaded(
+      {
+    this.markers = const {},
+    this.polylines = const {},
+  });
   @override
-  List<Object> get props => [currentLocation];
+  List<Object> get props => [markers, polylines];
 }
 
 class MapError extends MapState {
@@ -23,5 +28,3 @@ class MapError extends MapState {
   @override
   List<Object> get props => [error];
 }
-
-class MapMoved extends MapState {}

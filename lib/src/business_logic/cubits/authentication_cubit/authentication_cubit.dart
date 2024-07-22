@@ -1,4 +1,6 @@
+import 'package:driver/src/models/driver.dart';
 import 'package:driver/src/repositories/authentication_repository.dart';
+import 'package:driver/src/repositories/firestore_repository.dart';
 import 'package:driver/src/router/app_router.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,9 +11,11 @@ part 'authentication_cubit_state.dart';
 
 class AuthenticationCubit extends Cubit<AuthenticationState> {
   final AuthenticationRepository _authenticationRepository;
+  final FirestoreRepository _firestoreRepository;
 
-  AuthenticationCubit({required AuthenticationRepository authenticationRepository})
+  AuthenticationCubit({required AuthenticationRepository authenticationRepository, required FirestoreRepository firestoreRepository})
       : _authenticationRepository = authenticationRepository,
+        _firestoreRepository = firestoreRepository,
         super(AuthInitial());
 
   void verifyPhoneNumber(String phoneNumber) {
@@ -42,7 +46,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       User? user =
           await _authenticationRepository.signInWithCredential(credential);
       if (user != null) {
-        emit(AuthSuccess(user));
+        await _checkPhoneNumber();
       } else {
         emit(AuthError('Failed to sign in', AuthErrorStatus.atLogin));
       }
@@ -58,6 +62,20 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     } else {
       emit(AuthInitial());
     }
+  }
+
+  Future<void> _checkPhoneNumber() async {
+    User? user = _authenticationRepository.getCurrentUser();
+    if(user != null) {
+      String phoneNumber = user.phoneNumber!;
+      Driver? driver = await _firestoreRepository.getDriverByPhone(phoneNumber);
+      if(driver == null) {
+        emit(AuthPhoneNumberNotFound());
+      } else {
+        emit(AuthSuccess(user));
+      }
+    }
+    emit(AuthError("Failed to sign in", AuthErrorStatus.atLogin));
   }
 
   void signInWithSmsCode(String verificationId, String smsCode) {

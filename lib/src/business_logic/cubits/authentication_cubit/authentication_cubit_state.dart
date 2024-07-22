@@ -43,3 +43,5 @@ class AuthError extends AuthenticationState {
   @override
   List<Object> get props => [message, errorStatus];
 }
+
+class AuthPhoneNumberNotFound extends AuthenticationState {}
