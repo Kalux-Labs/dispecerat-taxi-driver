@@ -1,9 +1,7 @@
 import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
 import 'package:driver/src/repositories/database_repository.dart';
-import 'package:driver/src/repositories/firestore_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
 part 'location_cubit_state.dart';
@@ -38,7 +36,6 @@ class LocationCubit extends Cubit<LocationState> {
 
   Future<void> _startTracking() async {
     _positionStream.listen((Position position) {
-      print("New position $position}");
       if (_appSessionCubit.state != null) {
         _databaseRepository.updateDriver(_appSessionCubit.state!.id,
             {"lat": position.latitude, "lng": position.longitude});

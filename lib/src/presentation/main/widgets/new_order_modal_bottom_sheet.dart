@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import, dead_code
+
 import 'dart:async';
 
 import 'package:driver/src/business_logic/cubits/order_cubit/order_cubit.dart';
@@ -62,12 +64,12 @@ class _NewOrderModalBottomSheetState extends State<NewOrderModalBottomSheet> {
                     Text("Comanda noua",
                         style: Theme.of(context).textTheme.titleLarge),
                     ListTile(
-                        leading: Icon(Icons.pin_drop),
-                        title: Text("Adresa de preluare"),
+                        leading: const Icon(Icons.pin_drop),
+                        title: const Text("Adresa de preluare"),
                         subtitle: Text(state.order.place?.address ?? "")),
                     ListTile(
-                      leading: Icon(Icons.phone),
-                      title: Text("Numar de telefon"),
+                      leading: const Icon(Icons.phone),
+                      title: const Text("Numar de telefon"),
                       subtitle: Text(state.order.phone),
                       onTap: () {
                         Utils.initiatePhoneCall(state.order.phone);
@@ -77,7 +79,7 @@ class _NewOrderModalBottomSheetState extends State<NewOrderModalBottomSheet> {
                       height: 20,
                     ),
                     Text(
-                        "Mai ai ${_currentSeconds} secunde sa accepti comanda."),
+                        "Mai ai $_currentSeconds secunde sa accepti comanda."),
                     const Spacer(),
                     FullWidthFilledButton(
                         onPressed: () {

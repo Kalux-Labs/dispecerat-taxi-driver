@@ -3,8 +3,6 @@ import 'package:driver/src/business_logic/cubits/map_cubit/map_cubit.dart';
 import 'package:driver/src/business_logic/cubits/order_cubit/order_cubit.dart';
 import 'package:driver/src/presentation/main/widgets/accepted_order_modal_bottom_sheet.dart';
 import 'package:driver/src/router/app_router.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -23,8 +21,8 @@ class _GoogleMapsWidgetState extends State<GoogleMapsWidget> {
       builder: (BuildContext context, LocationState state) {
         return BlocConsumer<OrderCubit, OrderState>(
             listener: (BuildContext context, OrderState orderState) {
-          debugPrint("CHANGED ORDERSTATE: ${orderState}");
-          debugPrint("CHANGED STATE: ${state}");
+          debugPrint("CHANGED ORDERSTATE: $orderState");
+          debugPrint("CHANGED STATE: $state");
           if (orderState is OrderAccepted) {
             if (state is LocationUpdated) {
               context.read<MapCubit>().getPolyline(

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
 import 'package:driver/src/business_logic/cubits/authentication_cubit/authentication_cubit.dart';
 import 'package:driver/src/business_logic/cubits/connectivity_cubit/connectivity_cubit.dart';

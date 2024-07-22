@@ -68,7 +68,7 @@ class _AcceptedOrderModalBottomSheetState extends State<AcceptedOrderModalBottom
                   builder: (BuildContext context, ScrollController controller) {
                     return Material(
                       borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(16)),
+                          const BorderRadius.vertical(top: Radius.circular(16)),
                       child: ListView(
                         controller: controller,
                         padding: const EdgeInsets.all(16),
@@ -85,20 +85,20 @@ class _AcceptedOrderModalBottomSheetState extends State<AcceptedOrderModalBottom
                             ],
                           ),
                           ListTile(
-                              leading: Icon(Icons.pin_drop),
-                              title: Text("Adresa de preluare"),
+                              leading: const Icon(Icons.pin_drop),
+                              title: const Text("Adresa de preluare"),
                               subtitle: Text(state.order.place?.address ?? "")),
                           ListTile(
-                            leading: Icon(Icons.phone),
-                            title: Text("Numar de telefon"),
+                            leading: const Icon(Icons.phone),
+                            title: const Text("Numar de telefon"),
                             subtitle: Text(state.order.phone),
                             onTap: () {
                               Utils.initiatePhoneCall(state.order.phone);
                             },
                           ),
                           ListTile(
-                            leading: Icon(Icons.info),
-                            title: Text("Detalii"),
+                            leading: const Icon(Icons.info),
+                            title: const Text("Detalii"),
                             subtitle: Text(state.order.details.isNotEmpty
                                 ? state.order.details
                                 : "Nu exista detalii aditionale"),

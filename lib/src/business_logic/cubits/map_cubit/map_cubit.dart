@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:driver/src/services/google_routes_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
