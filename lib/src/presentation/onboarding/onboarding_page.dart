@@ -4,6 +4,7 @@ import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
 import 'package:driver/src/business_logic/cubits/authentication_cubit/authentication_cubit.dart';
 import 'package:driver/src/business_logic/cubits/connectivity_cubit/connectivity_cubit.dart';
 import 'package:driver/src/business_logic/cubits/order_cubit/order_cubit.dart';
+import 'package:driver/src/models/driver.dart';
 import 'package:driver/src/presentation/authentication/authentication_page.dart';
 import 'package:driver/src/presentation/error/error_page.dart';
 import 'package:driver/src/presentation/error/no_internet_page.dart';
@@ -56,34 +57,39 @@ class _OnboardingPageState extends State<OnboardingPage> {
           }
         },
         builder: (BuildContext context, ConnectivityState internetState) {
-          if (internetState is ConnectivityDisconnected) {
-            return const NoInternetPage();
-          } else if (state is AuthError) {
-            return ErrorPage(
-              title: "Codul este invalid",
-              callback: () {
-                // AppRoute
-                context.read<AuthenticationCubit>().resetAuthentication();
-              },
-              callbackText: "Inapoi",
-              // description: "",
-            );
-          } else if (state is AuthPhoneNumberNotFound) {
-            return ErrorPage(
-              title: "Numarul nu este inregistrat",
-              callback: () {
-                context.read<AuthenticationCubit>().resetAuthentication();
-              },
-              callbackText: "Inapoi",
-            );
-          } else if (state is AuthInitial ||
-              state is AuthCodeAutoRetrievalTimeout ||
-              state is AuthCodeSent) {
-            return const AuthenticationPage();
-          } else if (state is AuthSuccess) {
-            return const MainPageShell();
-          }
-          return const LoadingPage();
+          return BlocBuilder<AppSessionCubit, Driver?>(
+              builder: (BuildContext context, Driver? driver) {
+            if (internetState is ConnectivityDisconnected) {
+              return const NoInternetPage();
+            } else if (state is AuthError) {
+              return ErrorPage(
+                title: "Codul este invalid",
+                callback: () {
+                  // AppRoute
+                  context.read<AuthenticationCubit>().resetAuthentication();
+                },
+                callbackText: "Inapoi",
+                // description: "",
+              );
+            } else if (state is AuthPhoneNumberNotFound) {
+              return ErrorPage(
+                title: "Numarul nu este inregistrat",
+                callback: () {
+                  context.read<AuthenticationCubit>().resetAuthentication();
+                },
+                callbackText: "Inapoi",
+              );
+            } else if (state is AuthInitial ||
+                state is AuthCodeAutoRetrievalTimeout ||
+                state is AuthCodeSent) {
+              return const AuthenticationPage();
+            } else if (state is AuthSuccess) {
+              if (driver != null) {
+                return const MainPageShell();
+              }
+            }
+            return const LoadingPage();
+          });
         },
       );
     });

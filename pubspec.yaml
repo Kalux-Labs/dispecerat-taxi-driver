@@ -54,6 +54,7 @@ dependencies:
   url_launcher: ^6.3.0
   connectivity_plus: ^6.0.3
   flutter_polyline_points: ^2.1.0
+  package_info_plus: ^8.0.0
 
 dev_dependencies:
   flutter_test:

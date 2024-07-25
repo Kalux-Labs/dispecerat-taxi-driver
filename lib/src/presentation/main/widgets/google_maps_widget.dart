@@ -21,8 +21,6 @@ class _GoogleMapsWidgetState extends State<GoogleMapsWidget> {
       builder: (BuildContext context, LocationState state) {
         return BlocConsumer<OrderCubit, OrderState>(
             listener: (BuildContext context, OrderState orderState) {
-          debugPrint("CHANGED ORDERSTATE: $orderState");
-          debugPrint("CHANGED STATE: $state");
           if (orderState is OrderAccepted) {
             if (state is LocationUpdated) {
               context.read<MapCubit>().getPolyline(

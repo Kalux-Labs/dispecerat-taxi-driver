@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:driver/src/business_logic/cubits/app_info_cubit.dart';
 import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
 import 'package:driver/src/business_logic/cubits/app_theme_cubit.dart';
 import 'package:driver/src/business_logic/cubits/authentication_cubit/authentication_cubit.dart';
@@ -53,8 +54,7 @@ class AppBootstrap extends StatelessWidget {
                     firestoreRepository: context.read<FirestoreRepository>())),
             BlocProvider<MapCubit>(
               create: (context) => MapCubit(
-                googleRoutesService: context.read<GoogleRoutesService>()
-              ),
+                  googleRoutesService: context.read<GoogleRoutesService>()),
             ),
             BlocProvider<OrderCubit>(
               create: (context) => OrderCubit(
@@ -69,7 +69,10 @@ class AppBootstrap extends StatelessWidget {
                     )),
             BlocProvider<ConnectivityCubit>(
                 create: (context) =>
-                    ConnectivityCubit(connectivity: Connectivity()))
+                    ConnectivityCubit(connectivity: Connectivity())),
+            BlocProvider<AppInfoCubit>(
+              create: (context) => AppInfoCubit(),
+            )
           ],
           child: child,
         ));

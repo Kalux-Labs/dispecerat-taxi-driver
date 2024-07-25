@@ -1,4 +1,5 @@
 import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
+import 'package:driver/src/models/driver.dart';
 import 'package:driver/src/presentation/main/main_page.dart';
 import 'package:driver/src/router/app_router.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +18,11 @@ class _MainPageShellState extends State<MainPageShell>
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
+    if(_globalContext.mounted){
+      _globalContext.read<AppSessionCubit>().updateDriverConnection(true);
+    }
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -38,7 +42,6 @@ class _MainPageShellState extends State<MainPageShell>
   }
 
   Future<void> _handleAppLifecycleState(AppLifecycleState state) async {
-    debugPrint("handleAppLifecycleState");
     if (_globalContext.mounted) {
       if (state == AppLifecycleState.resumed) {
         _globalContext.read<AppSessionCubit>().updateDriverConnection(true);
