@@ -7,26 +7,33 @@ class ErrorPage extends StatelessWidget {
   final String? description;
   final VoidCallback? callback;
   final String? callbackText;
-  const ErrorPage({super.key, this.title, this.description, this.callback, this.callbackText});
+  const ErrorPage(
+      {super.key,
+      this.title,
+      this.description,
+      this.callback,
+      this.callbackText});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(
-      builder: (BuildContext context, AuthenticationState state) {
-        return Scaffold(
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        builder: (BuildContext context, AuthenticationState state) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               // if(state is AuthError)
               //   Text(state.message),
-              Text(title ?? "", style: Theme.of(context).textTheme.displayMedium),
+              Text(title ?? "",
+                  style: Theme.of(context).textTheme.displayMedium),
               Text(description ?? ""),
-              if(callback != null)
+              if (callback != null)
                 ElevatedButton(onPressed: callback, child: Text(callbackText!))
             ],
           ),
-        );
-      }
-    );
+        ),
+      );
+    });
   }
 }

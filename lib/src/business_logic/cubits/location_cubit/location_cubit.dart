@@ -31,6 +31,8 @@ class LocationCubit extends Cubit<LocationState> {
       emit(LocationPermissionDenied());
     } else if (status.isPermanentlyDenied) {
       emit(LocationPermissionPermanentlyDenied());
+    } else {
+      emit(LocationPermissionInitial());
     }
   }
 

@@ -48,13 +48,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }, builder: (BuildContext context, AuthenticationState state) {
       return BlocConsumer<ConnectivityCubit, ConnectivityState>(
         listener: (BuildContext context, ConnectivityState internetState) {
-          if (state is AuthSuccess) {
-            if (internetState is ConnectivityDisconnected) {
-              context.read<AppSessionCubit>().updateDriverConnection(false);
-            } else {
-              context.read<AppSessionCubit>().updateDriverConnection(true);
-            }
-          }
+          // if (state is AuthSuccess) {
+          //   if (internetState is ConnectivityDisconnected) {
+          //     context.read<AppSessionCubit>().updateDriverConnection(false);
+          //   } else {
+          //     context.read<AppSessionCubit>().updateDriverConnection(true);
+          //   }
+          // }
         },
         builder: (BuildContext context, ConnectivityState internetState) {
           return BlocBuilder<AppSessionCubit, Driver?>(
@@ -83,10 +83,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 state is AuthCodeAutoRetrievalTimeout ||
                 state is AuthCodeSent) {
               return const AuthenticationPage();
-            } else if (state is AuthSuccess) {
-              if (driver != null) {
-                return const MainPageShell();
-              }
+            } else if (state is AuthSuccess && driver != null) {
+              return const MainPage();
             }
             return const LoadingPage();
           });

@@ -20,13 +20,13 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
-            title: Text("Termeni si conditii"),
+            title: const Text("Termeni si conditii"),
             onTap: () async {
               await _launchUrl(AppConstants.termsAndConditions);
             },
           ),
           ListTile(
-            title: Text("Politica de confidentialitate"),
+            title: const Text("Politica de confidentialitate"),
             onTap: () async {
               await _launchUrl(AppConstants.privacyPolicy);
             },

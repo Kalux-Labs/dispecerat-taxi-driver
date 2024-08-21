@@ -15,7 +15,8 @@ void main() async {
 
   await Firebase.initializeApp();
 
-  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kReleaseMode);
+  await FirebaseCrashlytics.instance
+      .setCrashlyticsCollectionEnabled(kReleaseMode);
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
@@ -36,5 +37,3 @@ void main() async {
 
   runApp(const AppBootstrap(child: App()));
 }
-
-
