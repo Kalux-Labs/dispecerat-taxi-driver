@@ -52,4 +52,8 @@ class FirestoreRepository {
   Future<void> updateDriverConnection(Driver driver, bool online) async {
     await _driversCollection.doc(driver.id).update({'online': online});
   }
+
+  Future<void> refreshFCMToken(String driverId, String fcmToken) async {
+    await _driversCollection.doc(driverId).update({'fcmToken': fcmToken});
+  }
 }

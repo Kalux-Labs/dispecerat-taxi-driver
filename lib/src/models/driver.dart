@@ -9,28 +9,29 @@ class Driver {
   final bool online;
   final String? orderId;
   final String? name;
+  final String? fcmToken;
 
-  Driver({
-    required this.id,
-    required this.phone,
-    required this.number,
-    required this.available,
-    required this.online,
-    this.orderId,
-    this.name,
-  });
+  Driver(
+      {required this.id,
+      required this.phone,
+      required this.number,
+      required this.available,
+      required this.online,
+      this.orderId,
+      this.name,
+      this.fcmToken});
 
   factory Driver.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     Map data = snapshot.data() as Map<String, dynamic>;
     return Driver(
-      id: snapshot.id,
-      phone: data['phone'],
-      number: data['number'],
-      orderId: data['orderId'],
-      available: data['available'] ?? false,
-      online: data['online'],
-      name: data['name'],
-    );
+        id: snapshot.id,
+        phone: data['phone'],
+        number: data['number'],
+        orderId: data['orderId'],
+        available: data['available'] ?? false,
+        online: data['online'],
+        name: data['name'],
+        fcmToken: data['fcmToken']);
   }
 
   factory Driver.fromDataSnapshot(DataSnapshot snapshot) {
@@ -46,7 +47,8 @@ class Driver {
         available: data['available'] as bool,
         online: data['online'] as bool,
         orderId: data['orderId'] as String?,
-        name: data['name'] as String?);
+        name: data['name'] as String?,
+        fcmToken: data['fcmToken'] as String?);
   }
 
   Driver copyWith(
@@ -55,7 +57,8 @@ class Driver {
       bool? available,
       bool? online,
       String? orderId,
-      String? name}) {
+      String? name,
+      String? fcmToken}) {
     return Driver(
         id: id,
         phone: phone ?? this.phone,
@@ -63,6 +66,7 @@ class Driver {
         available: available ?? this.available,
         online: online ?? this.online,
         orderId: orderId ?? this.orderId,
-        name: name ?? this.name);
+        name: name ?? this.name,
+        fcmToken: fcmToken ?? this.fcmToken);
   }
 }

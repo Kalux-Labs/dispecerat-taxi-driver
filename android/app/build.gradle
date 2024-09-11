@@ -79,6 +79,7 @@ android {
             keyPassword releaseProperties['keyPassword']
             storeFile releaseProperties['storeFile'] ? file(releaseProperties['storeFile']) : null
             storePassword releaseProperties['storePassword']
+            // proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 

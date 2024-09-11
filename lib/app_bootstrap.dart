@@ -6,6 +6,7 @@ import 'package:driver/src/business_logic/cubits/authentication_cubit/authentica
 import 'package:driver/src/business_logic/cubits/connectivity_cubit/connectivity_cubit.dart';
 import 'package:driver/src/business_logic/cubits/location_cubit/location_cubit.dart';
 import 'package:driver/src/business_logic/cubits/map_cubit/map_cubit.dart';
+import 'package:driver/src/business_logic/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:driver/src/business_logic/cubits/order_cubit/order_cubit.dart';
 import 'package:driver/src/repositories/authentication_repository.dart';
 import 'package:driver/src/repositories/database_repository.dart';
@@ -41,6 +42,10 @@ class AppBootstrap extends StatelessWidget {
         ],
         child: MultiBlocProvider(
           providers: [
+            BlocProvider<NotificationsCubit>(
+                create: (context) => NotificationsCubit(
+                  firestoreRepository: context.read<FirestoreRepository>()
+                )),
             BlocProvider<AppThemeCubit>(create: (context) => AppThemeCubit()),
             BlocProvider<AppSessionCubit>(
               create: (context) => AppSessionCubit(

@@ -3,6 +3,7 @@
 import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
 import 'package:driver/src/business_logic/cubits/authentication_cubit/authentication_cubit.dart';
 import 'package:driver/src/business_logic/cubits/connectivity_cubit/connectivity_cubit.dart';
+import 'package:driver/src/business_logic/cubits/notifications_cubit/notifications_cubit.dart';
 import 'package:driver/src/business_logic/cubits/order_cubit/order_cubit.dart';
 import 'package:driver/src/models/driver.dart';
 import 'package:driver/src/presentation/authentication/authentication_page.dart';
@@ -43,19 +44,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
             .initializeDriverByPhoneNumber(state.user)
             .then((value) {
           context.read<OrderCubit>().listenForDriverChanges();
+          final String? driverId = context.read<AppSessionCubit>().state?.id;
+          if (driverId != null) {
+            context.read<NotificationsCubit>().initialize(driverId);
+          }
         });
       }
     }, builder: (BuildContext context, AuthenticationState state) {
-      return BlocConsumer<ConnectivityCubit, ConnectivityState>(
-        listener: (BuildContext context, ConnectivityState internetState) {
-          // if (state is AuthSuccess) {
-          //   if (internetState is ConnectivityDisconnected) {
-          //     context.read<AppSessionCubit>().updateDriverConnection(false);
-          //   } else {
-          //     context.read<AppSessionCubit>().updateDriverConnection(true);
-          //   }
-          // }
-        },
+      return BlocBuilder<ConnectivityCubit, ConnectivityState>(
         builder: (BuildContext context, ConnectivityState internetState) {
           return BlocBuilder<AppSessionCubit, Driver?>(
               builder: (BuildContext context, Driver? driver) {
