@@ -20,59 +20,68 @@ class _GoogleMapsWidgetState extends State<GoogleMapsWidget> {
     return BlocBuilder<LocationCubit, LocationState>(
       builder: (BuildContext context, LocationState state) {
         return BlocConsumer<OrderCubit, OrderState>(
-            listener: (BuildContext context, OrderState orderState) {
-          if (orderState is OrderAccepted) {
-            if (state is LocationUpdated) {
-              context.read<MapCubit>().getPolyline(
-                  LatLng(state.position.latitude, state.position.longitude),
-                  LatLng(orderState.order.coordinates.latitude,
-                      orderState.order.coordinates.longitude,),);
+          listener: (BuildContext context, OrderState orderState) {
+            if (orderState is OrderAccepted) {
+              if (state is LocationPermissionGranted) {
+                context.read<MapCubit>().getPolyline(
+                      LatLng(state.position.latitude, state.position.longitude),
+                      LatLng(
+                        orderState.order.coordinates.latitude,
+                        orderState.order.coordinates.longitude,
+                      ),
+                    );
+              }
             }
-          }
-        }, builder: (BuildContext context, OrderState orderState) {
-          return BlocConsumer<MapCubit, MapState>(
-            listener: (BuildContext context, MapState mapState) {
-              if (mapState is MapError) {
-                AppRouter.scaffoldMessengerState.currentState!
-                    .showSnackBar(SnackBar(
-                  content: Text('S-a produs o eroare: ${mapState.error}'),
-                ),);
-              }
-            },
-            builder: (BuildContext context, MapState mapState) {
-              if (state is LocationUpdated) {
-                return Stack(
-                  children: <Widget>[
-                    GoogleMap(
-                      onMapCreated: (GoogleMapController controller) {},
-                      myLocationEnabled: true,
-                      initialCameraPosition: CameraPosition(
-                          target: LatLng(state.position.latitude,
-                              state.position.longitude,),
-                          zoom: 14,),
-                      zoomControlsEnabled: false,
-
-                      // rotateGesturesEnabled: false,
-                      // gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-                      //   Factory<OneSequenceGestureRecognizer>(
-                      //       () => EagerGestureRecognizer()),
-                      // },
-                      markers: (mapState is MapLoaded)
-                          ? Set<Marker>.of(mapState.markers.values)
-                          : <Marker>{},
-                      polylines: (mapState is MapLoaded)
-                          ? Set<Polyline>.of(mapState.polylines.values)
-                          : <Polyline>{},
+          },
+          builder: (BuildContext context, OrderState orderState) {
+            return BlocConsumer<MapCubit, MapState>(
+              listener: (BuildContext context, MapState mapState) {
+                if (mapState is MapError) {
+                  AppRouter.scaffoldMessengerState.currentState!.showSnackBar(
+                    SnackBar(
+                      content: Text('S-a produs o eroare: ${mapState.error}'),
                     ),
-                    if (orderState is OrderAccepted)
-                      const AcceptedOrderModalBottomSheet(),
-                  ],
-                );
-              }
-              return const Text('S-a produs o eroare');
-            },
-          );
-        },);
+                  );
+                }
+              },
+              builder: (BuildContext context, MapState mapState) {
+                if (state is LocationPermissionGranted) {
+                  return Stack(
+                    children: <Widget>[
+                      GoogleMap(
+                        onMapCreated: (GoogleMapController controller) {},
+                        myLocationEnabled: true,
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(
+                            state.position.latitude,
+                            state.position.longitude,
+                          ),
+                          zoom: 14,
+                        ),
+                        zoomControlsEnabled: false,
+
+                        // rotateGesturesEnabled: false,
+                        // gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                        //   Factory<OneSequenceGestureRecognizer>(
+                        //       () => EagerGestureRecognizer()),
+                        // },
+                        markers: (mapState is MapLoaded)
+                            ? Set<Marker>.of(mapState.markers.values)
+                            : <Marker>{},
+                        polylines: (mapState is MapLoaded)
+                            ? Set<Polyline>.of(mapState.polylines.values)
+                            : <Polyline>{},
+                      ),
+                      if (orderState is OrderAccepted)
+                        const AcceptedOrderModalBottomSheet(),
+                    ],
+                  );
+                }
+                return const Text('S-a produs o eroare');
+              },
+            );
+          },
+        );
       },
     );
   }

@@ -13,10 +13,10 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final AuthenticationRepository _authenticationRepository;
   final FirestoreRepository _firestoreRepository;
 
-  AuthenticationCubit(
-      {required AuthenticationRepository authenticationRepository,
-      required FirestoreRepository firestoreRepository,})
-      : _authenticationRepository = authenticationRepository,
+  AuthenticationCubit({
+    required AuthenticationRepository authenticationRepository,
+    required FirestoreRepository firestoreRepository,
+  })  : _authenticationRepository = authenticationRepository,
         _firestoreRepository = firestoreRepository,
         super(AuthInitial());
 
@@ -28,17 +28,30 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         await signInWithCredential(credential);
       },
       verificationFailed: (FirebaseAuthException e) {
-        debugPrint('FirebaseAuthException ${e.code} ${e.message}');
+        debugPrint(
+            'FirebaseAuthException ${e.code} ${e.message} ${e.stackTrace}',);
         switch (e.code) {
           case 'invalid-phone-number':
-            emit(AuthError(
-                'Numarul de telefon este invalid.', AuthErrorStatus.atLogin,),);
+            emit(
+              AuthError(
+                'Numarul de telefon este invalid.',
+                AuthErrorStatus.atLogin,
+              ),
+            );
           case 'too-many-requests':
-            emit(AuthError('Prea multe cereri, incercati mai tarziu.',
-                AuthErrorStatus.atLogin,),);
+            emit(
+              AuthError(
+                'Prea multe cereri, incercati mai tarziu.',
+                AuthErrorStatus.atLogin,
+              ),
+            );
           default:
-            emit(AuthError('S-a produs o eroare, incercati mai tarziu.',
-                AuthErrorStatus.atLogin,),);
+            emit(
+              AuthError(
+                'S-a produs o eroare, incercati mai tarziu.',
+                AuthErrorStatus.atLogin,
+              ),
+            );
         }
       },
       codeSent: (String verificationId, int? resendToken) {
@@ -62,8 +75,12 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       if (user != null) {
         await _checkPhoneNumber();
       } else {
-        emit(AuthError('Autentificarea a esuat, incercati mai tarziu.',
-            AuthErrorStatus.atLogin,),);
+        emit(
+          AuthError(
+            'Autentificarea a esuat, incercati mai tarziu.',
+            AuthErrorStatus.atLogin,
+          ),
+        );
       }
     } catch (e) {
       emit(AuthError(e.toString(), AuthErrorStatus.atLogin));
@@ -83,7 +100,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     final User? user = _authenticationRepository.getCurrentUser();
     if (user != null) {
       final String phoneNumber = user.phoneNumber!;
-      final Driver? driver = await _firestoreRepository.getDriverByPhone(phoneNumber);
+      final Driver? driver =
+          await _firestoreRepository.getDriverByPhone(phoneNumber);
       if (driver == null) {
         emit(AuthError('Numarul nu a fost gasit.', AuthErrorStatus.atLogin));
       } else {

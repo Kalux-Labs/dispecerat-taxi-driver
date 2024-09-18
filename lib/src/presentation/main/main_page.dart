@@ -26,93 +26,92 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   @override
-  void initState() {
-    SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
-      if (context.mounted) {
-        context.read<LocationCubit>().requestLocationPermission();
-      }
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: AppRouter.homePageScaffoldState,
       drawer: const HomePageDrawer(),
       body: BlocBuilder<LocationCubit, LocationState>(
-          builder: (BuildContext context, LocationState state) {
-        return BlocConsumer<OrderCubit, OrderState>(
+        builder: (BuildContext context, LocationState state) {
+          return BlocConsumer<OrderCubit, OrderState>(
             listener: (BuildContext context, OrderState orderState) {
-          if (orderState is OrderReceived) {
-            showModalBottomSheet<void>(
-                context: context,
-                isDismissible: false,
-                enableDrag: false,
-                shape: const RoundedRectangleBorder(
+              if (orderState is OrderReceived) {
+                showModalBottomSheet<void>(
+                  context: context,
+                  isDismissible: false,
+                  enableDrag: false,
+                  shape: const RoundedRectangleBorder(
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(16)),),
-                builder: (BuildContext context) {
-                  return const NewOrderModalBottomSheet();
-                },);
-          } else if (orderState is OrderAccepted) {
-            AppRouter.scaffoldMessengerState.currentState!
-                .showSnackBar(const SnackBar(
-              content: Text('Comanda a fost acceptata'),
-            ),);
-            // showModalBottomSheet<void>(
-            //     context: context,
-            //     isDismissible: false,
-            //     elevation: 0,
-            //     backgroundColor: Colors.transparent,
-            //     barrierColor: Colors.white.withOpacity(0),
-            //     isScrollControlled: true,
-            //     enableDrag: false,
-            //     shape: const RoundedRectangleBorder(
-            //         borderRadius:
-            //             BorderRadius.vertical(top: Radius.circular(16))),
-            //     builder: (BuildContext context) {
-            //       return const AcceptedOrderModalBottomSheet();
-            //     });
-          } else if (orderState is OrderExpired) {
-            Navigator.pop(context);
-            AppRouter.scaffoldMessengerState.currentState!
-                .showSnackBar(const SnackBar(
-              content: Text('Comanda a expirat'),
-            ),);
-          } else if (orderState is OrderFinished) {
-            AppRouter.scaffoldMessengerState.currentState!
-                .showSnackBar(const SnackBar(
-              content: Text('Comanda a fost finalizata'),
-            ),);
-          }
-        }, builder: (BuildContext context, OrderState orderState) {
-          if (state is LocationUpdated) {
-            return SafeArea(
-              child: Stack(
-                children: <Widget>[
-                  const GoogleMapsWidget(),
-                  Positioned(
-                      top: 8,
-                      child: CircledIconButton(
-                        onPressed: _handleDrawer,
-                        iconData: Icons.menu,
-                      ),),
-                ],
-              ),
-            );
-          } else if (state is LocationPermissionDenied) {
-            return const LocationPermissionPage();
-          } else if (state is LocationPermissionPermanentlyDenied) {
-            return const ErrorPage(
-              title: 'Permisiuni de locatie',
-              description:
-                  'Permisiunile de locatie au fost permanent blocate, acceseaza setarile telefonului pentru a le debloca',
-            );
-          }
-          return const LoadingPage();
-        },);
-      },),
+                        BorderRadius.vertical(top: Radius.circular(16)),
+                  ),
+                  builder: (BuildContext context) {
+                    return const NewOrderModalBottomSheet();
+                  },
+                );
+              } else if (orderState is OrderAccepted) {
+                AppRouter.scaffoldMessengerState.currentState!.showSnackBar(
+                  const SnackBar(
+                    content: Text('Comanda a fost acceptata'),
+                  ),
+                );
+                // showModalBottomSheet<void>(
+                //     context: context,
+                //     isDismissible: false,
+                //     elevation: 0,
+                //     backgroundColor: Colors.transparent,
+                //     barrierColor: Colors.white.withOpacity(0),
+                //     isScrollControlled: true,
+                //     enableDrag: false,
+                //     shape: const RoundedRectangleBorder(
+                //         borderRadius:
+                //             BorderRadius.vertical(top: Radius.circular(16))),
+                //     builder: (BuildContext context) {
+                //       return const AcceptedOrderModalBottomSheet();
+                //     });
+              } else if (orderState is OrderExpired) {
+                Navigator.pop(context);
+                AppRouter.scaffoldMessengerState.currentState!.showSnackBar(
+                  const SnackBar(
+                    content: Text('Comanda a expirat'),
+                  ),
+                );
+              } else if (orderState is OrderFinished) {
+                AppRouter.scaffoldMessengerState.currentState!.showSnackBar(
+                  const SnackBar(
+                    content: Text('Comanda a fost finalizata'),
+                  ),
+                );
+              }
+            },
+            builder: (BuildContext context, OrderState orderState) {
+              if (state is LocationPermissionGranted) {
+                return SafeArea(
+                  child: Stack(
+                    children: <Widget>[
+                      const GoogleMapsWidget(),
+                      Positioned(
+                        top: 8,
+                        child: CircledIconButton(
+                          onPressed: _handleDrawer,
+                          iconData: Icons.menu,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (state is LocationPermissionDenied) {
+                return const LocationPermissionPage();
+              } else if (state is LocationPermissionPermanentlyDenied) {
+                return const ErrorPage(
+                  title: 'Permisiuni de locatie',
+                  description:
+                      'Permisiunile de locatie au fost permanent blocate, acceseaza setarile telefonului pentru a le debloca',
+                );
+              }
+              return const LoadingPage();
+            },
+          );
+        },
+      ),
     );
   }
 

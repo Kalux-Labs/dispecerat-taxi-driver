@@ -26,7 +26,6 @@ class LocationCubit extends Cubit<LocationState> {
     final PermissionStatus status = await Permission.location.request();
 
     if (status.isGranted) {
-      emit(LocationPermissionGranted());
       _startTrackingIfNecessary();
     } else if (status.isDenied) {
       emit(LocationPermissionDenied());
@@ -46,6 +45,7 @@ class LocationCubit extends Cubit<LocationState> {
         distanceFilter: 10,
       ),
     ).listen((Position position) {
+      emit(LocationPermissionGranted(position: position));
       if (_appSessionCubit.state != null) {
         _databaseRepository.updateDriver(
           _appSessionCubit.state!.id,
@@ -55,11 +55,6 @@ class LocationCubit extends Cubit<LocationState> {
           },
         );
       }
-      emit(
-        LocationUpdated(
-          position: position,
-        ),
-      );
     });
   }
 

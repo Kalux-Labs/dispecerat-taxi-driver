@@ -40,6 +40,8 @@ class AppRouter {
   }
 
   static MaterialPageRoute<Widget> _goToPage(
-          Widget page, RouteSettings settings,) =>
+    Widget page,
+    RouteSettings settings,
+  ) =>
       MaterialPageRoute<Widget>(builder: (_) => page, settings: settings);
 }
