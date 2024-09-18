@@ -22,8 +22,8 @@ class _NewOrderModalBottomSheetState extends State<NewOrderModalBottomSheet> {
   int _currentSeconds = 10;
   late Timer _timer;
 
-  _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       setState(() {
         if (_currentSeconds == 0) {
           timer.cancel();
@@ -60,16 +60,16 @@ class _NewOrderModalBottomSheetState extends State<NewOrderModalBottomSheet> {
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("Comanda noua",
-                        style: Theme.of(context).textTheme.titleLarge),
+                  children: <Widget>[
+                    Text('Comanda noua',
+                        style: Theme.of(context).textTheme.titleLarge,),
                     ListTile(
                         leading: const Icon(Icons.pin_drop),
-                        title: const Text("Adresa de preluare"),
-                        subtitle: Text(state.order.place?.address ?? "")),
+                        title: const Text('Adresa de preluare'),
+                        subtitle: Text(state.order.place?.address ?? ''),),
                     ListTile(
                       leading: const Icon(Icons.phone),
-                      title: const Text("Numar de telefon"),
+                      title: const Text('Numar de telefon'),
                       subtitle: Text(state.order.phone),
                       onTap: () {
                         Utils.initiatePhoneCall(state.order.phone);
@@ -79,14 +79,14 @@ class _NewOrderModalBottomSheetState extends State<NewOrderModalBottomSheet> {
                       height: 20,
                     ),
                     Text(
-                        "Mai ai $_currentSeconds secunde sa accepti comanda."),
+                        'Mai ai $_currentSeconds secunde sa accepti comanda.',),
                     const Spacer(),
                     FullWidthFilledButton(
                         onPressed: () {
                           Navigator.pop(context);
                           context.read<OrderCubit>().acceptOrder();
                         },
-                        text: "Accepta comanda")
+                        text: 'Accepta comanda',),
                   ],
                 ),
               ),
@@ -95,6 +95,6 @@ class _NewOrderModalBottomSheetState extends State<NewOrderModalBottomSheet> {
             return const SizedBox.shrink();
           }
           return const SizedBox.shrink();
-        });
+        },);
   }
 }

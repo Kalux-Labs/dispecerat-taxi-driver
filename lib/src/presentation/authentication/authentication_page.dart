@@ -14,9 +14,9 @@ class AuthenticationPage extends StatefulWidget {
 }
 
 class _AuthenticationPageState extends State<AuthenticationPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _phoneNumberController = TextEditingController();
-  final _smsCodeController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _smsCodeController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(
@@ -29,10 +29,10 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     Text('Introdu numarul de telefon',
-                        style: Theme.of(context).textTheme.headlineSmall),
-                    const SizedBox(height: 10.0),
+                        style: Theme.of(context).textTheme.headlineSmall,),
+                    const SizedBox(height: 10),
                     TextFormField(
                       controller: _phoneNumberController,
                       enabled: state is! AuthCodeSent,
@@ -40,26 +40,26 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                       decoration: const InputDecoration(
                           hintText: '770 313 912',
                           labelText: 'Numar de telefon',
-                          prefixText: '+40 '),
-                      inputFormatters: [
+                          prefixText: '+40 ',),
+                      inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(9),
-                        PhoneNumberTextInputFormatter()
+                        PhoneNumberTextInputFormatter(),
                       ],
                       validator: Validators.phoneValidator,
                     ),
-                    if (state is AuthCodeSent) const SizedBox(height: 10.0),
+                    if (state is AuthCodeSent) const SizedBox(height: 10),
                     if (state is AuthCodeSent)
                       TextFormField(
                         controller: _smsCodeController,
                         keyboardType: TextInputType.number,
-                        inputFormatters: [
+                        inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly,
-                          FilteringTextInputFormatter.singleLineFormatter
+                          FilteringTextInputFormatter.singleLineFormatter,
                         ],
                       ),
                     const SizedBox(
-                      height: 20.0,
+                      height: 20,
                     ),
                     FullWidthButton(
                         onPressed: () {
@@ -69,7 +69,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                               context
                                   .read<AuthenticationCubit>()
                                   .verifyPhoneNumber(
-                                      '+40${_phoneNumberController.text}');
+                                      '+40${_phoneNumberController.text}',);
 
                               // context.read<AuthenticationBloc>().add(LoginUser(
                               //     phone:
@@ -81,15 +81,15 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                             context
                                 .read<AuthenticationCubit>()
                                 .signInWithSmsCode(state.verificationId,
-                                    _smsCodeController.text);
+                                    _smsCodeController.text,);
                           }
                         },
                         text: (state is AuthCodeSent)
-                            ? "Valideaza codul"
-                            : "Conectează-te")
+                            ? 'Valideaza codul'
+                            : 'Conectează-te',),
                   ],
                 ),
-              )));
-    });
+              ),),);
+    },);
   }
 }

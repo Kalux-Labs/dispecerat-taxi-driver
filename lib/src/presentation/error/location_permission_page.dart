@@ -12,14 +12,14 @@ class LocationPermissionPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             const Text(
-                "Aplicatia necesita permisiuni de locatie ale telefonului."),
+                'Aplicatia necesita permisiuni de locatie ale telefonului.',),
             ElevatedButton(
                 onPressed: () {
                   context.read<LocationCubit>().requestLocationPermission();
                 },
-                child: const Text("Aproba permisiunile."))
+                child: const Text('Aproba permisiunile.'),),
           ],
         ),
       ),

@@ -12,7 +12,7 @@ class ErrorPage extends StatelessWidget {
       this.title,
       this.description,
       this.callback,
-      this.callbackText});
+      this.callbackText,});
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +22,15 @@ class ErrorPage extends StatelessWidget {
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              // if(state is AuthError)
-              //   Text(state.message),
-              Text(title ?? "",
-                  style: Theme.of(context).textTheme.displayMedium),
-              Text(description ?? ""),
+            children: <Widget>[
+              Text(title ?? '', style: Theme.of(context).textTheme.bodyLarge),
+              Text(description ?? ''),
               if (callback != null)
-                ElevatedButton(onPressed: callback, child: Text(callbackText!))
+                ElevatedButton(onPressed: callback, child: Text(callbackText!)),
             ],
           ),
         ),
       );
-    });
+    },);
   }
 }

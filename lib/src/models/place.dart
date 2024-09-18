@@ -5,15 +5,21 @@ class Place {
   final String address;
   final LatLng geometry;
 
-  const Place(
-      {required this.id, required this.address, required this.geometry});
+  const Place({
+    required this.id,
+    required this.address,
+    required this.geometry,
+  });
 
   factory Place.fromJson(Map<String, dynamic> json) {
-    final result = json['result'];
+    final Map<String, dynamic> result = json['result'] as Map<String, dynamic>;
     return Place(
-        id: result['place_id'],
-        address: result['formatted_address'],
-        geometry: LatLng(result['geometry']['location']['lat'],
-            result['geometry']['location']['lng']));
+      id: result['place_id'] as String,
+      address: result['formatted_address'] as String,
+      geometry: LatLng(
+        result['geometry']['location']['lat'] as double,
+        result['geometry']['location']['lng'] as double,
+      ),
+    );
   }
 }

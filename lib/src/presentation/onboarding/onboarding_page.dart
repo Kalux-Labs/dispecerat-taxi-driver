@@ -26,7 +26,7 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   @override
   void initState() {
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
       if (context.mounted) {
         context.read<AuthenticationCubit>().checkUserStatus();
       }
@@ -42,7 +42,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         context
             .read<AppSessionCubit>()
             .initializeDriverByPhoneNumber(state.user)
-            .then((value) {
+            .then((_) {
           context.read<OrderCubit>().listenForDriverChanges();
           final String? driverId = context.read<AppSessionCubit>().state?.id;
           if (driverId != null) {
@@ -59,21 +59,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
               return const NoInternetPage();
             } else if (state is AuthError) {
               return ErrorPage(
-                title: "Codul este invalid",
-                callback: () {
-                  // AppRoute
-                  context.read<AuthenticationCubit>().resetAuthentication();
-                },
-                callbackText: "Inapoi",
-                // description: "",
-              );
-            } else if (state is AuthPhoneNumberNotFound) {
-              return ErrorPage(
-                title: "Numarul nu este inregistrat",
+                title: state.message,
                 callback: () {
                   context.read<AuthenticationCubit>().resetAuthentication();
                 },
-                callbackText: "Inapoi",
+                callbackText: 'Inapoi',
               );
             } else if (state is AuthInitial ||
                 state is AuthCodeAutoRetrievalTimeout ||
@@ -83,9 +73,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
               return const MainPage();
             }
             return const LoadingPage();
-          });
+          },);
         },
       );
-    });
+    },);
   }
 }

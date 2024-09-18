@@ -12,8 +12,8 @@ class AcceptedOrderModalBottomSheet extends StatefulWidget {
   State<AcceptedOrderModalBottomSheet> createState() => _AcceptedOrderModalBottomSheetState();
 }
 class _AcceptedOrderModalBottomSheetState extends State<AcceptedOrderModalBottomSheet> {
-  final _controller = DraggableScrollableController();
-  final _sheet = GlobalKey();
+  final DraggableScrollableController _controller = DraggableScrollableController();
+  final GlobalKey<State<StatefulWidget>> _sheet = GlobalKey();
 
   @override
   void initState() {
@@ -22,8 +22,10 @@ class _AcceptedOrderModalBottomSheetState extends State<AcceptedOrderModalBottom
   }
 
   void _onChanged() {
-    final currentSize = _controller.size;
-    if(currentSize <= 0.05) _collapse();
+    final double currentSize = _controller.size;
+    if(currentSize <= 0.05) {
+      _collapse();
+    }
   }
 
   void _collapse() => _animateSheet(sheet.snapSizes!.first);
@@ -45,7 +47,7 @@ class _AcceptedOrderModalBottomSheetState extends State<AcceptedOrderModalBottom
   }
 
   DraggableScrollableSheet get sheet =>
-      (_sheet.currentWidget as DraggableScrollableSheet);
+      _sheet.currentWidget! as DraggableScrollableSheet;
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +64,7 @@ class _AcceptedOrderModalBottomSheetState extends State<AcceptedOrderModalBottom
                   minChildSize: 0.3,
                   maxChildSize: 0.7,
                   snap: true,
-                  expand: true,
-                  snapSizes: const [0.3, 0.7],
+                  snapSizes: const <double>[0.3, 0.7],
                   shouldCloseOnMinExtent: false,
                   builder: (BuildContext context, ScrollController controller) {
                     return Material(
@@ -72,25 +73,25 @@ class _AcceptedOrderModalBottomSheetState extends State<AcceptedOrderModalBottom
                       child: ListView(
                         controller: controller,
                         padding: const EdgeInsets.all(16),
-                        children: [
+                        children: <Widget>[
                           Column(
-                            children: [
+                            children: <Widget>[
                               Container(
                                 height: 4,
                                 width: 40,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
-                                    color: Colors.grey),
+                                    color: Colors.grey,),
                               ),
                             ],
                           ),
                           ListTile(
                               leading: const Icon(Icons.pin_drop),
-                              title: const Text("Adresa de preluare"),
-                              subtitle: Text(state.order.place?.address ?? "")),
+                              title: const Text('Adresa de preluare'),
+                              subtitle: Text(state.order.place?.address ?? ''),),
                           ListTile(
                             leading: const Icon(Icons.phone),
-                            title: const Text("Numar de telefon"),
+                            title: const Text('Numar de telefon'),
                             subtitle: Text(state.order.phone),
                             onTap: () {
                               Utils.initiatePhoneCall(state.order.phone);
@@ -98,10 +99,10 @@ class _AcceptedOrderModalBottomSheetState extends State<AcceptedOrderModalBottom
                           ),
                           ListTile(
                             leading: const Icon(Icons.info),
-                            title: const Text("Detalii"),
+                            title: const Text('Detalii'),
                             subtitle: Text(state.order.details.isNotEmpty
                                 ? state.order.details
-                                : "Nu exista detalii aditionale"),
+                                : 'Nu exista detalii aditionale',),
                           ),
                           const SizedBox(
                             height: 20,
@@ -111,11 +112,11 @@ class _AcceptedOrderModalBottomSheetState extends State<AcceptedOrderModalBottom
                                 context.read<OrderCubit>().completeOrder();
                                 context.read<MapCubit>().reset();
                               },
-                              text: "Finalizeaza comanda")
+                              text: 'Finalizeaza comanda',),
                         ],
                       ),
                     );
-                  }));
+                  },),);
         } else {
           return const SizedBox.shrink();
         }

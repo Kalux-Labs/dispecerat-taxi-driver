@@ -27,7 +27,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   void initState() {
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
       if (context.mounted) {
         context.read<LocationCubit>().requestLocationPermission();
       }
@@ -51,15 +51,15 @@ class _MainPageState extends State<MainPage> {
                 enableDrag: false,
                 shape: const RoundedRectangleBorder(
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(16))),
+                        BorderRadius.vertical(top: Radius.circular(16)),),
                 builder: (BuildContext context) {
                   return const NewOrderModalBottomSheet();
-                });
+                },);
           } else if (orderState is OrderAccepted) {
             AppRouter.scaffoldMessengerState.currentState!
                 .showSnackBar(const SnackBar(
-              content: Text("Comanda a fost acceptata"),
-            ));
+              content: Text('Comanda a fost acceptata'),
+            ),);
             // showModalBottomSheet<void>(
             //     context: context,
             //     isDismissible: false,
@@ -78,26 +78,26 @@ class _MainPageState extends State<MainPage> {
             Navigator.pop(context);
             AppRouter.scaffoldMessengerState.currentState!
                 .showSnackBar(const SnackBar(
-              content: Text("Comanda a expirat"),
-            ));
+              content: Text('Comanda a expirat'),
+            ),);
           } else if (orderState is OrderFinished) {
             AppRouter.scaffoldMessengerState.currentState!
                 .showSnackBar(const SnackBar(
-              content: Text("Comanda a fost finalizata"),
-            ));
+              content: Text('Comanda a fost finalizata'),
+            ),);
           }
         }, builder: (BuildContext context, OrderState orderState) {
           if (state is LocationUpdated) {
             return SafeArea(
               child: Stack(
-                children: [
+                children: <Widget>[
                   const GoogleMapsWidget(),
                   Positioned(
                       top: 8,
                       child: CircledIconButton(
                         onPressed: _handleDrawer,
                         iconData: Icons.menu,
-                      )),
+                      ),),
                 ],
               ),
             );
@@ -105,14 +105,14 @@ class _MainPageState extends State<MainPage> {
             return const LocationPermissionPage();
           } else if (state is LocationPermissionPermanentlyDenied) {
             return const ErrorPage(
-              title: "Permisiuni de locatie",
+              title: 'Permisiuni de locatie',
               description:
-                  "Permisiunile de locatie au fost permanent blocate, acceseaza setarile telefonului pentru a le debloca",
+                  'Permisiunile de locatie au fost permanent blocate, acceseaza setarile telefonului pentru a le debloca',
             );
           }
           return const LoadingPage();
-        });
-      }),
+        },);
+      },),
     );
   }
 

@@ -26,38 +26,42 @@ class Order {
     this.place,
   });
 
-  Order copyWith(
-      {String? placeId,
-      DateTime? createdAt,
-      String? details,
-      OrderStatus? status,
-      String? phone,
-      String? driverId,
-      Place? place,
-      GeoPoint? coordinates}) {
+  Order copyWith({
+    String? placeId,
+    DateTime? createdAt,
+    String? details,
+    OrderStatus? status,
+    String? phone,
+    String? driverId,
+    Place? place,
+    GeoPoint? coordinates,
+  }) {
     return Order(
-        id: id,
-        placeId: placeId ?? this.placeId,
-        createdAt: createdAt ?? this.createdAt,
-        details: details ?? this.details,
-        status: status ?? this.status,
-        phone: phone ?? this.phone,
-        driverId: driverId ?? this.driverId,
-        place: place ?? this.place,
-        coordinates: coordinates ?? this.coordinates);
+      id: id,
+      placeId: placeId ?? this.placeId,
+      createdAt: createdAt ?? this.createdAt,
+      details: details ?? this.details,
+      status: status ?? this.status,
+      phone: phone ?? this.phone,
+      driverId: driverId ?? this.driverId,
+      place: place ?? this.place,
+      coordinates: coordinates ?? this.coordinates,
+    );
   }
 
-  factory Order.fromDocumentSnapshot(DocumentSnapshot snapshot) {
-    Map data = snapshot.data() as Map<String, dynamic>;
+  factory Order.fromDocumentSnapshot(
+      DocumentSnapshot<Map<String, dynamic>> snapshot,) {
+    final Map<String, dynamic> data = snapshot.data()!;
 
     return Order(
-        id: snapshot.id,
-        placeId: data['placeId'],
-        createdAt: DateTime.fromMillisecondsSinceEpoch(data['created_at']),
-        details: data['details'],
-        status: (data['status'] as String?).toOrderStatus(),
-        phone: data['phone'],
-        driverId: data['driverId'],
-        coordinates: data['coordinates'] as GeoPoint);
+      id: snapshot.id,
+      placeId: data['placeId'] as String,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(data['created_at'] as int),
+      details: data['details'] as String,
+      status: (data['status'] as String).toOrderStatus(),
+      phone: data['phone'] as String,
+      driverId: data['driverId'] as String,
+      coordinates: data['coordinates'] as GeoPoint,
+    );
   }
 }

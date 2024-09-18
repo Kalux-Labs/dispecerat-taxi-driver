@@ -3,7 +3,9 @@
 import 'dart:async';
 
 import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
+import 'package:driver/src/models/driver.dart';
 import 'package:driver/src/models/order.dart';
+import 'package:driver/src/models/place.dart';
 import 'package:driver/src/repositories/database_repository.dart';
 import 'package:driver/src/repositories/firestore_repository.dart';
 import 'package:driver/src/services/google_places_service.dart';
@@ -23,7 +25,7 @@ class OrderCubit extends Cubit<OrderState> {
   OrderCubit(
       {required FirestoreRepository firestoreRepository,
       required GooglePlacesService googlePlacesService,
-      required AppSessionCubit appSessionCubit})
+      required AppSessionCubit appSessionCubit,})
       : _appSessionCubit = appSessionCubit,
         _googlePlacesService = googlePlacesService,
         _firestoreRepository = firestoreRepository,
@@ -34,9 +36,9 @@ class OrderCubit extends Cubit<OrderState> {
   Future<void> acceptOrder() async {
     if (state is OrderReceived) {
       _timer?.cancel();
-      final order = (state as OrderReceived).order;
+      final Order order = (state as OrderReceived).order;
       await _firestoreRepository.acceptOrder(
-          order.id, _appSessionCubit.state!.id);
+          order.id, _appSessionCubit.state!.id,);
       emit(OrderAccepted((state as OrderReceived).order));
     }
     // emit(OrderWaiting());
@@ -48,9 +50,9 @@ class OrderCubit extends Cubit<OrderState> {
 
   Future<void> completeOrder() async {
     if (state is OrderAccepted) {
-      final order = (state as OrderAccepted).order;
+      final Order order = (state as OrderAccepted).order;
       await _firestoreRepository.completeOrder(
-          order.id, _appSessionCubit.state!.id);
+          order.id, _appSessionCubit.state!.id,);
       emit(OrderFinished());
     }
   }
@@ -59,7 +61,7 @@ class OrderCubit extends Cubit<OrderState> {
     if (_appSessionCubit.state?.id != null) {
       _firestoreRepository
           .getDriverStream(_appSessionCubit.state!.id)
-          .listen((driver) {
+          .listen((Driver driver) {
         if (driver.orderId != null && driver.orderId!.isNotEmpty) {
           _fetchOrderDetails(driver.orderId!);
         } else {
@@ -70,9 +72,9 @@ class OrderCubit extends Cubit<OrderState> {
   }
 
   Future<void> _fetchOrderDetails(String orderId) async {
-    final order = await _firestoreRepository.getOrder(orderId);
+    final Order? order = await _firestoreRepository.getOrder(orderId);
     if (order != null) {
-      final place = await _googlePlacesService.getPlace(order.placeId);
+      final Place place = await _googlePlacesService.getPlace(order.placeId);
 
       if (order.status == OrderStatus.accepted) {
         emit(OrderAccepted(order.copyWith(place: place)));
@@ -81,7 +83,7 @@ class OrderCubit extends Cubit<OrderState> {
         emit(OrderReceived(order.copyWith(place: place)));
       }
     } else {
-      emit(OrderError("Comanda nu exista"));
+      emit(OrderError('Comanda nu exista'));
     }
   }
 

@@ -11,21 +11,21 @@ class AppThemeCubit extends Cubit<ThemeData> {
       brightness: Brightness.light,
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       elevatedButtonTheme: _elevatedButtonTheme,
-      inputDecorationTheme: _inputDecorationTheme);
+      inputDecorationTheme: _inputDecorationTheme,);
 
   static final ThemeData _darkTheme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       elevatedButtonTheme: _elevatedButtonTheme,
-      inputDecorationTheme: _inputDecorationTheme);
+      inputDecorationTheme: _inputDecorationTheme,);
 
   static final InputDecorationTheme _inputDecorationTheme =
       InputDecorationTheme(
     filled: true,
     fillColor: Colors.grey[200],
     border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+        borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none,),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(8),
       borderSide: const BorderSide(color: Colors.grey),
@@ -42,7 +42,7 @@ class AppThemeCubit extends Cubit<ThemeData> {
       ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0))));
+                  borderRadius: BorderRadius.circular(18),),),);
 
   void toggle() {
     if (state.brightness == Brightness.dark) {

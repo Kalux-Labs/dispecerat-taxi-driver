@@ -15,7 +15,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
   AuthenticationCubit(
       {required AuthenticationRepository authenticationRepository,
-      required FirestoreRepository firestoreRepository})
+      required FirestoreRepository firestoreRepository,})
       : _authenticationRepository = authenticationRepository,
         _firestoreRepository = firestoreRepository,
         super(AuthInitial());
@@ -28,8 +28,18 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         await signInWithCredential(credential);
       },
       verificationFailed: (FirebaseAuthException e) {
-        emit(AuthError(
-            e.message ?? 'Unknown error occurred', AuthErrorStatus.atLogin));
+        debugPrint('FirebaseAuthException ${e.code} ${e.message}');
+        switch (e.code) {
+          case 'invalid-phone-number':
+            emit(AuthError(
+                'Numarul de telefon este invalid.', AuthErrorStatus.atLogin,),);
+          case 'too-many-requests':
+            emit(AuthError('Prea multe cereri, incercati mai tarziu.',
+                AuthErrorStatus.atLogin,),);
+          default:
+            emit(AuthError('S-a produs o eroare, incercati mai tarziu.',
+                AuthErrorStatus.atLogin,),);
+        }
       },
       codeSent: (String verificationId, int? resendToken) {
         emit(AuthCodeSent(verificationId));
@@ -37,7 +47,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       codeAutoRetrievalTimeout: (String verificationId) {
         if (_authenticationRepository.getCurrentUser() == null) {
           AppRouter.scaffoldMessengerState.currentState!
-              .showSnackBar(const SnackBar(content: Text("Codul a expirat")));
+              .showSnackBar(const SnackBar(content: Text('Codul a expirat')));
           emit(AuthCodeAutoRetrievalTimeout(verificationId));
         }
       },
@@ -47,12 +57,13 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   Future<void> signInWithCredential(AuthCredential credential) async {
     try {
       emit(AuthLoading());
-      User? user =
+      final User? user =
           await _authenticationRepository.signInWithCredential(credential);
       if (user != null) {
         await _checkPhoneNumber();
       } else {
-        emit(AuthError('Failed to sign in', AuthErrorStatus.atLogin));
+        emit(AuthError('Autentificarea a esuat, incercati mai tarziu.',
+            AuthErrorStatus.atLogin,),);
       }
     } catch (e) {
       emit(AuthError(e.toString(), AuthErrorStatus.atLogin));
@@ -60,7 +71,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   }
 
   void checkUserStatus() {
-    User? user = _authenticationRepository.getCurrentUser();
+    final User? user = _authenticationRepository.getCurrentUser();
     if (user != null) {
       emit(AuthSuccess(user));
     } else {
@@ -69,22 +80,22 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   }
 
   Future<void> _checkPhoneNumber() async {
-    User? user = _authenticationRepository.getCurrentUser();
+    final User? user = _authenticationRepository.getCurrentUser();
     if (user != null) {
-      String phoneNumber = user.phoneNumber!;
-      Driver? driver = await _firestoreRepository.getDriverByPhone(phoneNumber);
+      final String phoneNumber = user.phoneNumber!;
+      final Driver? driver = await _firestoreRepository.getDriverByPhone(phoneNumber);
       if (driver == null) {
-        emit(AuthPhoneNumberNotFound());
+        emit(AuthError('Numarul nu a fost gasit.', AuthErrorStatus.atLogin));
       } else {
         emit(AuthSuccess(user));
       }
     } else {
-      emit(AuthError("Failed to sign in", AuthErrorStatus.atLogin));
+      emit(AuthError('Failed to sign in', AuthErrorStatus.atLogin));
     }
   }
 
   void signInWithSmsCode(String verificationId, String smsCode) {
-    AuthCredential credential = PhoneAuthProvider.credential(
+    final AuthCredential credential = PhoneAuthProvider.credential(
       verificationId: verificationId,
       smsCode: smsCode,
     );
@@ -94,7 +105,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   void signOut() {
     _authenticationRepository
         .signOut()
-        .then((value) => {resetAuthentication()});
+        .then((_) => <void>{resetAuthentication()});
   }
 
   void resetAuthentication() {

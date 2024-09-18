@@ -2,7 +2,7 @@ part of 'order_cubit.dart';
 
 abstract class OrderState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object> get props => <Object>[];
 }
 
 class OrderWaiting extends OrderState {}
@@ -12,7 +12,7 @@ class OrderReceived extends OrderState {
   OrderReceived(this.order);
 
   @override
-  List<Object> get props => [order];
+  List<Object> get props => <Object>[order];
 }
 
 class OrderAccepted extends OrderState {
@@ -20,7 +20,7 @@ class OrderAccepted extends OrderState {
   OrderAccepted(this.order);
 
   @override
-  List<Object> get props => [order];
+  List<Object> get props => <Object>[order];
 }
 
 class OrderFinished extends OrderState {}
@@ -31,5 +31,5 @@ class OrderError extends OrderState {
   final String error;
   OrderError(this.error);
   @override
-  List<Object> get props => [error];
+  List<Object> get props => <Object>[error];
 }

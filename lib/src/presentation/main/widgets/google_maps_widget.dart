@@ -26,7 +26,7 @@ class _GoogleMapsWidgetState extends State<GoogleMapsWidget> {
               context.read<MapCubit>().getPolyline(
                   LatLng(state.position.latitude, state.position.longitude),
                   LatLng(orderState.order.coordinates.latitude,
-                      orderState.order.coordinates.longitude));
+                      orderState.order.coordinates.longitude,),);
             }
           }
         }, builder: (BuildContext context, OrderState orderState) {
@@ -35,24 +35,21 @@ class _GoogleMapsWidgetState extends State<GoogleMapsWidget> {
               if (mapState is MapError) {
                 AppRouter.scaffoldMessengerState.currentState!
                     .showSnackBar(SnackBar(
-                  content: Text("S-a produs o eroare: ${mapState.error}"),
-                ));
+                  content: Text('S-a produs o eroare: ${mapState.error}'),
+                ),);
               }
             },
             builder: (BuildContext context, MapState mapState) {
               if (state is LocationUpdated) {
                 return Stack(
-                  children: [
+                  children: <Widget>[
                     GoogleMap(
-                      onMapCreated: (controller) {
-                        context.read<MapCubit>().initMapController(controller);
-                      },
-                      myLocationButtonEnabled: true,
+                      onMapCreated: (GoogleMapController controller) {},
                       myLocationEnabled: true,
                       initialCameraPosition: CameraPosition(
                           target: LatLng(state.position.latitude,
-                              state.position.longitude),
-                          zoom: 14),
+                              state.position.longitude,),
+                          zoom: 14,),
                       zoomControlsEnabled: false,
 
                       // rotateGesturesEnabled: false,
@@ -62,20 +59,20 @@ class _GoogleMapsWidgetState extends State<GoogleMapsWidget> {
                       // },
                       markers: (mapState is MapLoaded)
                           ? Set<Marker>.of(mapState.markers.values)
-                          : {},
+                          : <Marker>{},
                       polylines: (mapState is MapLoaded)
                           ? Set<Polyline>.of(mapState.polylines.values)
-                          : {},
+                          : <Polyline>{},
                     ),
                     if (orderState is OrderAccepted)
-                      const AcceptedOrderModalBottomSheet()
+                      const AcceptedOrderModalBottomSheet(),
                   ],
                 );
               }
-              return const Text("S-a produs o eroare");
+              return const Text('S-a produs o eroare');
             },
           );
-        });
+        },);
       },
     );
   }

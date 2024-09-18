@@ -11,10 +11,10 @@ class NoInternetPage extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Nu exista conexiune la internet",
-                style: Theme.of(context).textTheme.bodyLarge),
-            Text("Va rugam sa va reconectat la internet")
+          children: <Widget>[
+            Text('Nu exista conexiune la internet',
+                style: Theme.of(context).textTheme.bodyLarge,),
+            Text('Va rugam sa va reconectat la internet'),
           ],
         ),
       ),

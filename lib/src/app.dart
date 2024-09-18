@@ -8,7 +8,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AppThemeCubit, ThemeData>(builder: (context, theme) {
+    return BlocBuilder<AppThemeCubit, ThemeData>(builder: (BuildContext context, ThemeData theme) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
         initialRoute: AppRoutes.initialRoute,
@@ -24,6 +24,6 @@ class App extends StatelessWidget {
           );
         },
       );
-    });
+    },);
   }
 }

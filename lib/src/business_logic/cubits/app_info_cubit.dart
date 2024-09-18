@@ -7,7 +7,7 @@ class AppInfoCubit extends Cubit<PackageInfo?> {
   }
 
   Future<void> _initializeAppInfo() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
     emit(packageInfo);
   }
 }

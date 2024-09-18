@@ -2,7 +2,7 @@ part of 'notifications_cubit.dart';
 
 abstract class NotificationState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object> get props => <Object>[];
 }
 
 class NotificationInitial extends NotificationState {}
@@ -26,5 +26,5 @@ class NotificationError extends NotificationState {
   NotificationError(this.error);
 
   @override
-  List<Object> get props => [error];
+  List<Object> get props => <Object>[error];
 }

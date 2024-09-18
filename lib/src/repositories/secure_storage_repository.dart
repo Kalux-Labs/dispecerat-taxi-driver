@@ -8,7 +8,7 @@ class SecureStorageRepository {
   }
 
   Future<String?> readData(String key) async {
-    final value = await _secureStorage.read(key: key);
+    final String? value = await _secureStorage.read(key: key);
     return value;
   }
 

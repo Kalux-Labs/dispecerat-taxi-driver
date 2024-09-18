@@ -25,61 +25,61 @@ class AppBootstrap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-        providers: [
+        providers: <RepositoryProvider<dynamic>>[
           RepositoryProvider<DatabaseRepository>(
-              create: (context) => DatabaseRepository()),
+              create: (BuildContext context) => DatabaseRepository(),),
           RepositoryProvider<FirestoreRepository>(
-              create: (context) => FirestoreRepository()),
+              create: (BuildContext context) => FirestoreRepository(),),
           RepositoryProvider<AuthenticationRepository>(
-              create: (context) => AuthenticationRepository()),
+              create: (BuildContext context) => AuthenticationRepository(),),
           RepositoryProvider<SecureStorageRepository>(
-              create: (context) => SecureStorageRepository()),
+              create: (BuildContext context) => SecureStorageRepository(),),
           RepositoryProvider<GooglePlacesService>(
-            create: (context) => GooglePlacesService(),
+            create: (BuildContext context) => GooglePlacesService(),
           ),
           RepositoryProvider<GoogleRoutesService>(
-              create: (context) => GoogleRoutesService())
+              create: (BuildContext context) => GoogleRoutesService(),),
         ],
         child: MultiBlocProvider(
-          providers: [
+          providers: <BlocProvider<dynamic>>[
             BlocProvider<NotificationsCubit>(
-                create: (context) => NotificationsCubit(
-                  firestoreRepository: context.read<FirestoreRepository>()
-                )),
-            BlocProvider<AppThemeCubit>(create: (context) => AppThemeCubit()),
+                create: (BuildContext context) => NotificationsCubit(
+                    firestoreRepository: context.read<FirestoreRepository>(),),),
+            BlocProvider<AppThemeCubit>(
+                create: (BuildContext context) => AppThemeCubit(),),
             BlocProvider<AppSessionCubit>(
-              create: (context) => AppSessionCubit(
+              create: (BuildContext context) => AppSessionCubit(
                   firestoreRepository: context.read<FirestoreRepository>(),
-                  databaseRepository: context.read<DatabaseRepository>()),
+                  databaseRepository: context.read<DatabaseRepository>(),),
             ),
             BlocProvider<AuthenticationCubit>(
-                create: (context) => AuthenticationCubit(
+                create: (BuildContext context) => AuthenticationCubit(
                     authenticationRepository:
                         context.read<AuthenticationRepository>(),
-                    firestoreRepository: context.read<FirestoreRepository>())),
+                    firestoreRepository: context.read<FirestoreRepository>(),),),
             BlocProvider<MapCubit>(
-              create: (context) => MapCubit(
-                  googleRoutesService: context.read<GoogleRoutesService>()),
+              create: (BuildContext context) => MapCubit(
+                  googleRoutesService: context.read<GoogleRoutesService>(),),
             ),
             BlocProvider<OrderCubit>(
-              create: (context) => OrderCubit(
+              create: (BuildContext context) => OrderCubit(
                   firestoreRepository: context.read<FirestoreRepository>(),
                   googlePlacesService: context.read<GooglePlacesService>(),
-                  appSessionCubit: context.read<AppSessionCubit>()),
+                  appSessionCubit: context.read<AppSessionCubit>(),),
             ),
             BlocProvider<LocationCubit>(
-                create: (context) => LocationCubit(
+                create: (BuildContext context) => LocationCubit(
                       databaseRepository: context.read<DatabaseRepository>(),
                       appSessionCubit: context.read<AppSessionCubit>(),
-                    )),
+                    ),),
             BlocProvider<ConnectivityCubit>(
-                create: (context) =>
-                    ConnectivityCubit(connectivity: Connectivity())),
+                create: (BuildContext context) =>
+                    ConnectivityCubit(connectivity: Connectivity()),),
             BlocProvider<AppInfoCubit>(
-              create: (context) => AppInfoCubit(),
-            )
+              create: (BuildContext context) => AppInfoCubit(),
+            ),
           ],
           child: child,
-        ));
+        ),);
   }
 }

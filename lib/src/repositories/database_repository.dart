@@ -6,13 +6,13 @@ class DatabaseRepository {
   final FirebaseDatabase _database = FirebaseDatabase.instance;
 
   Future<void> updateDriver(String id, Map<String, dynamic> map) async {
-    DatabaseReference driverRef = _database.ref('${AppConstants.drivers}/$id');
+    final DatabaseReference driverRef = _database.ref('${AppConstants.drivers}/$id');
     await driverRef.update(map);
   }
 
   Stream<Driver> getDriverStream(String id) {
-    DatabaseReference driverRef = _database.ref('${AppConstants.drivers}/$id');
-    return driverRef.onValue.map((event) {
+    final DatabaseReference driverRef = _database.ref('${AppConstants.drivers}/$id');
+    return driverRef.onValue.map((DatabaseEvent event) {
       return Driver.fromDataSnapshot(event.snapshot);
     });
   }

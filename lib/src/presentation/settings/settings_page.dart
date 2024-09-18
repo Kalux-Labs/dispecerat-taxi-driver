@@ -15,22 +15,22 @@ class SettingsPage extends StatelessWidget {
           onPressed: (){
             Navigator.pop(context);
           },
-        )
+        ),
       ),
       body: ListView(
-        children: [
+        children: <Widget>[
           ListTile(
-            title: const Text("Termeni si conditii"),
+            title: const Text('Termeni si conditii'),
             onTap: () async {
               await _launchUrl(AppConstants.termsAndConditions);
             },
           ),
           ListTile(
-            title: const Text("Politica de confidentialitate"),
+            title: const Text('Politica de confidentialitate'),
             onTap: () async {
               await _launchUrl(AppConstants.privacyPolicy);
             },
-          )
+          ),
         ],
       ),
     );
@@ -38,7 +38,7 @@ class SettingsPage extends StatelessWidget {
 
   Future<void> _launchUrl(String url) async {
     if(!await launchUrl(Uri.parse(url))) {
-      debugPrint("Could not launch $url");
+      debugPrint('Could not launch $url');
     }
   }
 }

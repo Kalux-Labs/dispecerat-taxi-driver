@@ -8,19 +8,19 @@ class GoogleRoutesService {
   GoogleRoutesService() : _polylinePoints = PolylinePoints();
 
   Future<List<LatLng>> getRouteBetweenCoordinates(
-      LatLng origin, LatLng destination) async {
-    List<LatLng> polylineCoordinates = [];
+      LatLng origin, LatLng destination,) async {
+    final List<LatLng> polylineCoordinates = <LatLng>[];
 
-    PolylineResult result = await _polylinePoints.getRouteBetweenCoordinates(
+    final PolylineResult result = await _polylinePoints.getRouteBetweenCoordinates(
         googleApiKey: Env.googleMapsAPIKey,
         request: PolylineRequest(
             origin: PointLatLng(origin.latitude, origin.longitude),
             destination:
                 PointLatLng(destination.latitude, destination.longitude),
-            mode: TravelMode.driving));
+            mode: TravelMode.driving,),);
 
     if (result.points.isNotEmpty) {
-      for (var point in result.points) {
+      for (final PointLatLng point in result.points) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       }
     }

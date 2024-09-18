@@ -6,7 +6,7 @@ class PhoneNumberTextInputFormatter extends TextInputFormatter {
       TextEditingValue oldValue,
       TextEditingValue newValue,
       ) {
-    final newText = newValue.text;
+    final String newText = newValue.text;
 
     // Insert spaces at the appropriate positions
     if (newText.length > 3 && newText.length <= 6) {

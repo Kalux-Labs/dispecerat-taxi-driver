@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TopNotification extends StatelessWidget {
   final VoidCallback callback;
-  const TopNotification({super.key, required this.callback});
+  const TopNotification({required this.callback, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +14,14 @@ class TopNotification extends StatelessWidget {
         return SizedBox(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("Comanda noua", style: Theme.of(context).textTheme.titleLarge)
+            children: <Widget>[
+              Text('Comanda noua', style: Theme.of(context).textTheme.titleLarge),
             ],
           ),
         );
       } else {
         return const SizedBox.shrink();
       }
-    });
+    },);
   }
 }

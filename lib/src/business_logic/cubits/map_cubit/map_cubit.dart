@@ -1,10 +1,9 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:driver/src/services/google_routes_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_flutter_platform_interface/src/types/bitmap.dart';
 
 part 'map_cubit_state.dart';
 
@@ -15,32 +14,38 @@ class MapCubit extends Cubit<MapState> {
       : _googleRoutesService = googleRoutesService,
         super(MapInitial());
 
-  late final GoogleMapController _mapController;
+  Future<void> _addPolyline(
+    List<LatLng> polylineCoordinates,
+    LatLng destination,
+  ) async {
+    const PolylineId polylineId = PolylineId('poly');
+    final Polyline polyline = Polyline(
+      polylineId: polylineId,
+      color: Colors.blue,
+      points: polylineCoordinates,
+    );
 
-  void initMapController(GoogleMapController controller) {
-    _mapController = controller;
+    const MarkerId markerId = MarkerId('markerId');
+    final AssetMapBitmap icon = await BitmapDescriptor.asset(
+      const ImageConfiguration(size: Size(48, 48)),
+      'assets/flag.png',
+    );
+    final Marker marker =
+        Marker(markerId: markerId, icon: icon, position: destination);
+    emit(
+      MapLoaded(
+        markers: <MarkerId, Marker>{markerId: marker},
+        polylines: <PolylineId, Polyline>{polylineId: polyline},
+      ),
+    );
   }
 
-  void _addPolyline(List<LatLng> polylineCoordinates, LatLng destination) async {
-    final polylineId = PolylineId("poly");
-    final polyline = Polyline(
-        polylineId: polylineId,
-        color: Colors.blue,
-        points: polylineCoordinates);
-
-      final markerId = MarkerId('markerId');
-      final icon = await BitmapDescriptor.asset(ImageConfiguration(size: Size(48,48)), 'assets/flag.png');
-      final marker = Marker(markerId: markerId, icon: icon, position: destination);
-      emit(MapLoaded(markers: <MarkerId, Marker>{markerId: marker}, polylines: {polylineId: polyline}));
-
-  }
-
-  void getPolyline(LatLng origin, LatLng destination) async {
+  Future<void> getPolyline(LatLng origin, LatLng destination) async {
     emit(MapLoading());
     try {
-      List<LatLng> polylineCoordinates = await _googleRoutesService
+      final List<LatLng> polylineCoordinates = await _googleRoutesService
           .getRouteBetweenCoordinates(origin, destination);
-      _addPolyline(polylineCoordinates, destination);
+      await _addPolyline(polylineCoordinates, destination);
     } catch (error) {
       debugPrint(error.toString());
       emit(MapError(error.toString()));
@@ -48,6 +53,6 @@ class MapCubit extends Cubit<MapState> {
   }
 
   void reset() {
-    emit(MapLoaded(markers: const {}, polylines: const {}));
+    emit(MapLoaded());
   }
 }

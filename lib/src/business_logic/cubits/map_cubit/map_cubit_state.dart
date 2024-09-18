@@ -2,7 +2,7 @@ part of 'map_cubit.dart';
 
 abstract class MapState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object> get props => <Object>[];
 }
 
 class MapInitial extends MapState {}
@@ -15,16 +15,16 @@ class MapLoaded extends MapState {
 
   MapLoaded(
       {
-    this.markers = const {},
-    this.polylines = const {},
+    this.markers = const <MarkerId, Marker>{},
+    this.polylines = const <PolylineId, Polyline>{},
   });
   @override
-  List<Object> get props => [markers, polylines];
+  List<Object> get props => <Object>[markers, polylines];
 }
 
 class MapError extends MapState {
   final String error;
   MapError(this.error);
   @override
-  List<Object> get props => [error];
+  List<Object> get props => <Object>[error];
 }

@@ -13,11 +13,13 @@ class AppRoutes {
 }
 
 class AppRouter {
-  static final scaffoldMessengerState = GlobalKey<ScaffoldMessengerState>();
+  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerState =
+      GlobalKey<ScaffoldMessengerState>();
 
-  static final homePageScaffoldState = GlobalKey<ScaffoldState>();
+  static final GlobalKey<ScaffoldState> homePageScaffoldState =
+      GlobalKey<ScaffoldState>();
 
-  static final appNav = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> appNav = GlobalKey<NavigatorState>();
 
   static Route<dynamic> generateAppNavigatorRoutes(RouteSettings settings) {
     final Object? args = settings.arguments;
@@ -32,12 +34,12 @@ class AppRouter {
       case AppRoutes.settingsPage:
         return _goToPage(const SettingsPage(), settings);
       default:
-        //TODO: replace with Error screen
+        // TODO(antonio): replace with Error screen
         return _goToPage(const OnboardingPage(), settings);
     }
   }
 
   static MaterialPageRoute<Widget> _goToPage(
-          Widget page, RouteSettings settings) =>
+          Widget page, RouteSettings settings,) =>
       MaterialPageRoute<Widget>(builder: (_) => page, settings: settings);
 }

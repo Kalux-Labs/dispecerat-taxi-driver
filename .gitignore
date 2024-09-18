@@ -19,6 +19,7 @@ Gemfile.lock
 *.dSYM.zip
 artifacts/
 .vscode
+.dart_tool
 android/debug.properties
 android/release.properties
 android/app/debug.jks

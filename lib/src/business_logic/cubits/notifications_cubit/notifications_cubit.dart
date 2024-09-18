@@ -1,11 +1,9 @@
-import 'package:driver/src/business_logic/cubits/app_session_cubit.dart';
-import 'package:driver/src/models/driver.dart';
 import 'package:driver/src/repositories/firestore_repository.dart';
+import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 part 'notifications_cubit_state.dart';
@@ -21,16 +19,13 @@ class NotificationsCubit extends Cubit<NotificationState> {
     _initializeLocalNotifications();
   }
 
-  void initialize(String driverId) async {
+  Future<void> initialize(String driverId) async {
     emit(NotificationLoading());
 
-    // await _flutterLocalNotificationsPlugin
-    //     .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-    //     ?.requestPermission();
     await FirebaseMessaging.instance.requestPermission();
-    initializeFCM(driverId);
+    await initializeFCM(driverId);
 
-    FirebaseMessaging.instance
+    await FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage? message) {
       if (message != null) {
@@ -38,13 +33,9 @@ class NotificationsCubit extends Cubit<NotificationState> {
       }
     });
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      _handleMessage(message);
-    });
+    FirebaseMessaging.onMessage.listen(_handleMessage);
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      _handleMessage(message);
-    });
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -52,21 +43,21 @@ class NotificationsCubit extends Cubit<NotificationState> {
   }
 
   static Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
+      RemoteMessage message,) async {
     // Ensure Firebase and plugin are initialized in the background
     await Firebase.initializeApp();
 
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
     await _showLocalNotification(flutterLocalNotificationsPlugin, message);
   }
 
-  void _initializeLocalNotifications() async {
+  Future<void> _initializeLocalNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    InitializationSettings initializationSettings =
-        const InitializationSettings(
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
       android: initializationSettingsAndroid,
     );
 
@@ -79,19 +70,19 @@ class NotificationsCubit extends Cubit<NotificationState> {
   }
 
   static void onDidReceiveNotificationResponse(
-      NotificationResponse notificationResponse) {
+      NotificationResponse notificationResponse,) {
     debugPrint(
-        "onDidReceivedNotificationResponse: ${notificationResponse.toString()}");
+        'onDidReceivedNotificationResponse: $notificationResponse',);
   }
 
   static void onDidReceiveBackgroundNotificationResponse(
-      NotificationResponse notificationResponse) {
+      NotificationResponse notificationResponse,) {
     debugPrint(
-        "onDidReceiveBackgroundNotificationResponse: ${notificationResponse.toString()}");
+        'onDidReceiveBackgroundNotificationResponse: $notificationResponse',);
   }
 
   void _handleMessage(RemoteMessage message) {
-    debugPrint("_handleMessage ${message.notification} ${message.data}");
+    debugPrint('_handleMessage ${message.notification} ${message.data}');
     _showLocalNotification(_flutterLocalNotificationsPlugin, message);
   }
 
@@ -100,7 +91,7 @@ class NotificationsCubit extends Cubit<NotificationState> {
     RemoteMessage message,
   ) async {
     debugPrint(
-        "_showLocalNotification ${message.notification} ${message.data}");
+        '_showLocalNotification ${message.notification} ${message.data}',);
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'your_channel_id',
@@ -117,8 +108,8 @@ class NotificationsCubit extends Cubit<NotificationState> {
 
     await flutterLocalNotificationsPlugin.show(
       message.notification.hashCode,
-      message.data['title'],
-      message.data['body'],
+      message.data['title'] as String?,
+      message.data['body'] as String?,
       platformChannelSpecifics,
     );
   }
@@ -127,13 +118,13 @@ class NotificationsCubit extends Cubit<NotificationState> {
     try {
       final String? fcmToken = await FirebaseMessaging.instance.getToken();
       if (fcmToken != null) {
-        _firestoreRepository.refreshFCMToken(driverId, fcmToken);
+        await _firestoreRepository.refreshFCMToken(driverId, fcmToken);
       }
-      FirebaseMessaging.instance.onTokenRefresh.listen((event) {
+      FirebaseMessaging.instance.onTokenRefresh.listen((String event) {
         _firestoreRepository.refreshFCMToken(driverId, event);
       });
     } catch (error) {
-      debugPrint("Error initializing FCM: $error");
+      debugPrint('Error initializing FCM: $error');
     }
   }
 }

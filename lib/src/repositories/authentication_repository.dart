@@ -15,11 +15,11 @@ class AuthenticationRepository {
         verificationCompleted: verificationCompleted,
         verificationFailed: verificationFailed,
         codeSent: codeSent,
-        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
+        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,);
   }
 
   Future<User?> signInWithCredential(AuthCredential credential) async {
-    UserCredential userCredential =
+    final UserCredential userCredential =
         await _firebaseAuth.signInWithCredential(credential);
     return userCredential.user;
   }
