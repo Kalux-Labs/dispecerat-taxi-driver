@@ -29,7 +29,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       },
       verificationFailed: (FirebaseAuthException e) {
         debugPrint(
-            'FirebaseAuthException ${e.code} ${e.message} ${e.stackTrace}',);
+          'FirebaseAuthException ${e.code} ${e.message} ${e.stackTrace}',
+        );
         switch (e.code) {
           case 'invalid-phone-number':
             emit(
