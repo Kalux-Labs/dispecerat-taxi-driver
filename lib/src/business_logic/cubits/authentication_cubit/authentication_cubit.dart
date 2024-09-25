@@ -4,6 +4,7 @@ import 'package:driver/src/repositories/firestore_repository.dart';
 import 'package:driver/src/router/app_router.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,9 +28,15 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       verificationCompleted: (PhoneAuthCredential credential) async {
         await signInWithCredential(credential);
       },
-      verificationFailed: (FirebaseAuthException e) {
+      verificationFailed: (FirebaseAuthException e) async {
         debugPrint(
           'FirebaseAuthException ${e.code} ${e.message} ${e.stackTrace}',
+        );
+        await FirebaseCrashlytics.instance.recordError(
+          e,
+          e.stackTrace,
+          reason: 'FirebaseAuthException',
+          fatal: true,
         );
         switch (e.code) {
           case 'invalid-phone-number':
@@ -39,20 +46,14 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
                 AuthErrorStatus.atLogin,
               ),
             );
-          case 'too-many-requests':
-            emit(
-              AuthError(
-                'Prea multe cereri, incercati mai tarziu.',
-                AuthErrorStatus.atLogin,
-              ),
-            );
           default:
-            emit(
-              AuthError(
-                'S-a produs o eroare, incercati mai tarziu.',
-                AuthErrorStatus.atLogin,
-              ),
-            );
+            await signInAnonymously(phoneNumber: phoneNumber);
+          // emit(
+          //   AuthError(
+          //     'S-a produs o eroare, incercati mai tarziu.',
+          //     AuthErrorStatus.atLogin,
+          //   ),
+          // );
         }
       },
       codeSent: (String verificationId, int? resendToken) {
@@ -71,18 +72,19 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   Future<void> signInWithCredential(AuthCredential credential) async {
     try {
       emit(AuthLoading());
-      final User? user =
-          await _authenticationRepository.signInWithCredential(credential);
-      if (user != null) {
-        await _checkPhoneNumber();
-      } else {
-        emit(
-          AuthError(
-            'Autentificarea a esuat, incercati mai tarziu.',
-            AuthErrorStatus.atLogin,
-          ),
-        );
-      }
+      await _checkPhoneNumber();
+    } catch (e) {
+      emit(AuthError(e.toString(), AuthErrorStatus.atLogin));
+    }
+  }
+
+  // TODO(antonio): delete this method when an alternative solution is found
+  // Issue: DIGI provider doesn't support Firebase Phone authentication, and doesn't send OTP SMS.
+  Future<void> signInAnonymously({required String phoneNumber}) async {
+    try {
+      emit(AuthLoading());
+      await _authenticationRepository.signInAnonymously();
+      await _checkPhoneNumber(phoneNumber: phoneNumber);
     } catch (e) {
       emit(AuthError(e.toString(), AuthErrorStatus.atLogin));
     }
@@ -97,19 +99,27 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     }
   }
 
-  Future<void> _checkPhoneNumber() async {
-    final User? user = _authenticationRepository.getCurrentUser();
+  Future<void> _checkPhoneNumber({String? phoneNumber}) async {
+    User? user = _authenticationRepository.getCurrentUser();
     if (user != null) {
-      final String phoneNumber = user.phoneNumber!;
+      final String userPhoneNumber = user.phoneNumber ?? phoneNumber!;
+      await user.updateDisplayName(userPhoneNumber);
+      await user.reload();
       final Driver? driver =
-          await _firestoreRepository.getDriverByPhone(phoneNumber);
+          await _firestoreRepository.getDriverByPhone(userPhoneNumber);
       if (driver == null) {
         emit(AuthError('Numarul nu a fost gasit.', AuthErrorStatus.atLogin));
       } else {
-        emit(AuthSuccess(user));
+        user = _authenticationRepository.getCurrentUser();
+        emit(AuthSuccess(user!));
       }
     } else {
-      emit(AuthError('Failed to sign in', AuthErrorStatus.atLogin));
+      emit(
+        AuthError(
+          'Autentificarea a esuat, incercati mai tarziu.',
+          AuthErrorStatus.atLogin,
+        ),
+      );
     }
   }
 

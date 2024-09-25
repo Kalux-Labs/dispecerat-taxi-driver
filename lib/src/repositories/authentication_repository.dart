@@ -11,16 +11,23 @@ class AuthenticationRepository {
     required PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout,
   }) async {
     await _firebaseAuth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        verificationCompleted: verificationCompleted,
-        verificationFailed: verificationFailed,
-        codeSent: codeSent,
-        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,);
+      phoneNumber: phoneNumber,
+      verificationCompleted: verificationCompleted,
+      verificationFailed: verificationFailed,
+      codeSent: codeSent,
+      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+    );
   }
 
   Future<User?> signInWithCredential(AuthCredential credential) async {
     final UserCredential userCredential =
         await _firebaseAuth.signInWithCredential(credential);
+    return userCredential.user;
+  }
+
+  Future<User?> signInAnonymously() async {
+    final UserCredential userCredential =
+        await _firebaseAuth.signInAnonymously();
     return userCredential.user;
   }
 

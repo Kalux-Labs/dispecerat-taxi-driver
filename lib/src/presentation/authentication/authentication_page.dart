@@ -80,12 +80,8 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                           state is AuthCodeAutoRetrievalTimeout) {
                         if (_formKey.currentState!.validate()) {
                           context.read<AuthenticationCubit>().verifyPhoneNumber(
-                                '+40${_phoneNumberController.text}',
+                                '+40${_phoneNumberController.text.replaceAll(' ', '').trim()}',
                               );
-
-                          // context.read<AuthenticationBloc>().add(LoginUser(
-                          //     phone:
-                          //         '+40${_controller.text.replaceAll(' ', '')}'));
                         }
                       }
                       if (state is AuthCodeSent) {

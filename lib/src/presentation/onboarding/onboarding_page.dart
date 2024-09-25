@@ -42,7 +42,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
         if (state is AuthSuccess) {
           context
               .read<AppSessionCubit>()
-              .initializeDriverByPhoneNumber(state.user)
+              .initializeDriverByPhoneNumber(
+                phoneNumber: state.user.displayName!,
+              )
               .then((_) {
             context.read<OrderCubit>().listenForDriverChanges();
             final String? driverId = context.read<AppSessionCubit>().state?.id;

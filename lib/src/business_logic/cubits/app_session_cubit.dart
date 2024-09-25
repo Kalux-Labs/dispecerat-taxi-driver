@@ -20,9 +20,9 @@ class AppSessionCubit extends Cubit<Driver?> {
     emit(driver);
   }
 
-  Future<void> initializeDriverByPhoneNumber(User user) async {
+  Future<void> initializeDriverByPhoneNumber({required String phoneNumber}) async {
     final Driver? driver =
-        await _firestoreRepository.getDriverByPhone(user.phoneNumber!);
+        await _firestoreRepository.getDriverByPhone(phoneNumber);
     emit(driver);
   }
 
